@@ -6,6 +6,7 @@ import AdminDashboard     from '../pages/Dashboard/AdminDashboard';
 import InstructorDashboard from '../pages/Dashboard/InstructorNumbers';
 import LogoutButton       from '../pages/auth/Logout';
 import ProtectedRoute     from '../components/ProtectedRoute';
+import ForgotPassword from '../pages/auth/ForgotPassword';
 
 function App() {
   return (
@@ -17,7 +18,8 @@ function App() {
         <Route path="/login"    element={<Login />} />
         <Route path="/logout"   element={<LogoutButton />} />
         <Route path="/register" element={<Register />} />
-
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        
         {/* Protected routes */}
         <Route
           path="/dashboard/admin"
