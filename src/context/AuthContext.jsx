@@ -3,7 +3,7 @@ import { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
-const API_URL = 'http://127.0.0.1:8000/api';
+const API_URL = `${import.meta.env.VITE_API_URL}`;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser]                       = useState(null);
@@ -112,6 +112,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   // ── Password reset — step 3: set new password ───────────────
+  // In resetPassword function — AuthContext.jsx
   const resetPassword = async (email, code, newPassword) => {
     setError(null);
     try {
@@ -122,6 +123,7 @@ export const AuthProvider = ({ children }) => {
       });
       return { success: true, message: data.message || 'Password reset successfully.' };
     } catch (err) {
+      console.log('Full error response:', err.response?.data);  // ← add this
       const msg = err.response?.data?.error || 'Failed to reset password.';
       setError(msg);
       return { success: false, message: msg };

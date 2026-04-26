@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-
+import { Link } from 'react-router-dom';
 /* ─────────────────────────────────────────────
    DriveIQ — Login Page
    Stack : React + Tailwind CSS
@@ -441,12 +441,12 @@ const Login = () => {
                   Remember me
                 </span>
               </label>
-              <a
-                href="/forgot-password"
+              <Link
+                to={"/forgot-password"}
                 className="text-[12px] text-blue-400 font-semibold hover:text-blue-300 transition-colors"
               >
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
             {/* Submit */}
