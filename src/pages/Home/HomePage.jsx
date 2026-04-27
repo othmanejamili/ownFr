@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import NavBar from '../Home/NavBar'
 /* ─────────────────────────────────────────────────────────────
    DriveIQ — Premium Homepage
    Stack  : React 18 + Tailwind CSS v3
@@ -100,43 +101,7 @@ const TrustItem = ({ text }) => (
 // ─────────────────────────────────────────────────────────────
 // NAV
 // ─────────────────────────────────────────────────────────────
-const Nav = () => {
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', fn);
-    return () => window.removeEventListener('scroll', fn);
-  }, []);
-
-  return (
-    <nav className={[
-      'sticky top-0 z-50 flex items-center justify-between px-11 py-4',
-      'border-b border-white/[0.06] transition-all duration-300',
-      scrolled ? 'bg-[#060B18]/95 backdrop-blur-md' : 'bg-[#060B18]',
-    ].join(' ')}>
-      <div className="flex items-center gap-2.5">
-        <LogoMark size={32} />
-        <span className="font-sora text-[15px] font-bold text-white tracking-tight">DriveIQ</span>
-      </div>
-
-      <div className="hidden md:flex items-center gap-7">
-        {['Features', 'Pricing', 'Schools', 'Blog', 'Docs'].map(l => (
-          <a key={l} href="#"
-            className="text-[13px] text-white/50 font-medium hover:text-white transition-colors duration-200 font-dm">
-            {l}
-          </a>
-        ))}
-      </div>
-
-      <div className="flex items-center gap-2.5">
-        <Link to={'/login'} className="hidden sm:block px-4 py-2 text-[13px] font-medium text-white/60 border border-white/10 rounded-lg bg-transparent hover:text-white hover:border-white/25 transition-all duration-200 font-dm">
-          Login
-        </Link>
-        <BtnPrimary size="sm">Start free trial</BtnPrimary>
-      </div>
-    </nav>
-  );
-};
+<NavBar />
 
 // ─────────────────────────────────────────────────────────────
 // HERO — floating dashboard cards
@@ -779,7 +744,7 @@ const HomePage = () => (
       @keyframes floatC { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
       @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
     `}</style>
-    <Nav />
+    <NavBar />
     <HeroSection />
     <LogosStrip />
     <FeaturesSection />
