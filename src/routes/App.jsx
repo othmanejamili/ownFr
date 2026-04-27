@@ -3,7 +3,6 @@ import Register           from '../pages/auth/RegisterPage';
 import Login              from '../pages/auth/LoginPage';
 import HomePage           from '../pages/Home/HomePage';
 import AdminDashboard     from '../pages/Dashboard/AdminDashboard';
-import InstructorDashboard from '../pages/Dashboard/InstructorNumbers';
 import LogoutButton       from '../pages/auth/Logout';
 import ProtectedRoute     from '../components/ProtectedRoute';
 import ForgotPassword from '../pages/auth/ForgotPassword';
@@ -26,14 +25,6 @@ function App() {
           element={
             <ProtectedRoute requiredRole="A">
               <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/instructor"
-          element={
-            <ProtectedRoute requiredRole="I">
-              <InstructorDashboard />
             </ProtectedRoute>
           }
         />

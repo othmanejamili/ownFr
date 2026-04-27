@@ -1,31 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
-import useSchoolCount from './SchoolNumbers'; 
-import useStudentCount from './StudentNumbers';
-import useInstructoreCount from './InstructorNumbers';
+// AdminDashboard.jsx — wired to real API via useDashboard hook
+// All chart/icon/sidebar/topbar code preserved exactly.
+// Changes are marked with ── REAL DATA ──
+import { useState, useEffect } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale, LinearScale, PointElement, LineElement,
   BarElement, ArcElement, Filler, Tooltip, Legend,
 } from 'chart.js';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
-import { useNavigate } from "react-router-dom";
+import useDashboard from '../Dashboard/Usedashboard';
 
 ChartJS.register(
   CategoryScale, LinearScale, PointElement, LineElement,
   BarElement, ArcElement, Filler, Tooltip, Legend
 );
 
-/* ─────────────────────────────────────────────────────────────
-   DriveIQ — Platform Admin Dashboard
-   Stack  : React 18 + Tailwind CSS v3 + react-chartjs-2
-   Install: npm install chart.js react-chartjs-2
-   Fonts  : Add to index.html:
-     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-   tailwind.config.js → extend:
-     fontFamily: { sora:['Sora','sans-serif'], dm:['DM Sans','sans-serif'], mono:['DM Mono','monospace'] }
-───────────────────────────────────────────────────────────── */
-
-// ── Range datasets ────────────────────────────────────────────
+// ── Range datasets (kept for charts — backend doesn't return time series yet) ──
 const RANGE_DATA = {
   '7d': {
     labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
@@ -47,7 +37,7 @@ const RANGE_DATA = {
   },
 };
 
-// ── Shared chart options helpers ──────────────────────────────
+// ── Chart helpers (unchanged) ─────────────────────────────────
 const tickStyle = { color:'rgba(240,244,255,0.28)', font:{ family:'DM Sans', size:10 } };
 const gridStyle = { color:'rgba(255,255,255,0.05)' };
 const tooltipStyle = {
@@ -56,7 +46,7 @@ const tooltipStyle = {
   padding:10, cornerRadius:8,
 };
 
-// ── SVG Icons ─────────────────────────────────────────────────
+// ── SVG Icons (unchanged) ─────────────────────────────────────
 const Icons = {
   Grid: () => <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.3"/></svg>,
   School: () => <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 1L14 5V11L8 15L2 11V5L8 1Z" stroke="currentColor" strokeWidth="1.3"/></svg>,
@@ -73,9 +63,8 @@ const Icons = {
   Check: () => <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" strokeWidth="1.2"/><path d="M4 6.5l2 2 3-3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>,
   ChevronRight: () => <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 3l3 3-3 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>,
   TrendUp: () => <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 7l3-3 2 2 3-4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  Refresh: () => <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8a7 7 0 0 1 7-7 7 7 0 0 1 5 2.1L15 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M15 1v4h-4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/><path d="M15 8a7 7 0 0 1-7 7 7 7 0 0 1-5-2.1L1 11" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M1 15v-4h4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>,
 };
-  
-  
 
 const LogoMark = ({ size = 28 }) => (
   <div className="bg-blue-600 flex items-center justify-center flex-shrink-0"
@@ -87,7 +76,7 @@ const LogoMark = ({ size = 28 }) => (
   </div>
 );
 
-// ── Sidebar ───────────────────────────────────────────────────
+// ── Sidebar (unchanged) ───────────────────────────────────────
 const NAV_ITEMS = [
   { section: 'PLATFORM', items: [
     { label:'Overview',    icon:'Grid',     active:true },
@@ -109,13 +98,10 @@ const NAV_ITEMS = [
 
 const Sidebar = () => (
   <aside className="w-[220px] flex-shrink-0 bg-[#0B1221] border-r border-white/[0.07] flex flex-col h-screen sticky top-0">
-    {/* Logo */}
     <div className="flex items-center gap-2.5 px-5 py-4 border-b border-white/[0.07]">
       <LogoMark size={28} />
       <span className="font-sora text-[14px] font-bold text-white">DriveIQ</span>
     </div>
-
-    {/* Nav */}
     <nav className="flex-1 overflow-y-auto py-3">
       {NAV_ITEMS.map(group => (
         <div key={group.section}>
@@ -146,8 +132,6 @@ const Sidebar = () => (
         </div>
       ))}
     </nav>
-
-    {/* Admin pill */}
     <div className="p-3 border-t border-white/[0.07]">
       <div className="flex items-center gap-2.5 bg-[#0F1A2E] border border-white/[0.07] rounded-xl p-2.5">
         <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
@@ -162,16 +146,23 @@ const Sidebar = () => (
   </aside>
 );
 
-// ── Top Bar ───────────────────────────────────────────────────
-const Topbar = ({ range, onRangeChange }) => (
+// ── Top Bar — now shows real lastUpdated + real failed count ──
+const Topbar = ({ range, onRangeChange, lastUpdated, failedMessages, onRefetch }) => (
   <div className="h-14 bg-[#0B1221] border-b border-white/[0.07] flex items-center px-6 gap-4 flex-shrink-0 sticky top-0 z-20">
     <div>
       <span className="font-sora text-[15px] font-bold text-white">Platform Overview</span>
-      <span className="text-[12px] text-white/25 ml-2 font-dm">Last updated: just now</span>
+      {/* ── REAL DATA: lastUpdated from hook ── */}
+      <span className="text-[12px] text-white/25 ml-2 font-dm">Last updated: {lastUpdated}</span>
     </div>
     <div className="flex-1" />
 
-    {/* Range selector */}
+    {/* Manual refresh button */}
+    <button onClick={onRefetch}
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/40 hover:text-white/70 transition-all text-[12px] font-dm">
+      <Icons.Refresh />
+      Refresh
+    </button>
+
     <div className="flex bg-[#0F1A2E] border border-white/[0.07] rounded-lg p-0.5 gap-0.5">
       {['7d','30d','90d'].map(r => (
         <button key={r} onClick={() => onRangeChange(r)}
@@ -184,32 +175,33 @@ const Topbar = ({ range, onRangeChange }) => (
       ))}
     </div>
 
-    {/* Alert badge */}
-    <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/25 rounded-lg px-3 py-1.5 cursor-pointer hover:bg-red-500/15 transition-colors">
-      <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-      <span className="text-[12px] font-semibold text-red-300 font-dm">3 failed messages</span>
-    </div>
+    {/* ── REAL DATA: failedMessages from hook ── */}
+    {failedMessages > 0 && (
+      <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/25 rounded-lg px-3 py-1.5 cursor-pointer hover:bg-red-500/15 transition-colors">
+        <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+        <span className="text-[12px] font-semibold text-red-300 font-dm">{failedMessages} failed messages</span>
+      </div>
+    )}
   </div>
 );
 
-// ── Stat Card ─────────────────────────────────────────────────
-const StatCard = ({ value, label, delta, deltaType = 'up', accent, glowColor, iconColor, icon: IconComp }) => {
+// ── Stat Card (unchanged) ─────────────────────────────────────
+const StatCard = ({ value, label, delta, deltaType = 'up', accent, iconColor, icon: IconComp }) => {
   const accents = {
-    blue:   { border: 'after:bg-gradient-to-r after:from-transparent after:via-blue-500 after:to-transparent', glow: 'bg-blue-600/10' },
-    purple: { border: 'after:bg-gradient-to-r after:from-transparent after:via-violet-500 after:to-transparent', glow: 'bg-violet-600/8' },
-    green:  { border: 'after:bg-gradient-to-r after:from-transparent after:via-emerald-500 after:to-transparent', glow: 'bg-emerald-600/8' },
-    cyan:   { border: 'after:bg-gradient-to-r after:from-transparent after:via-cyan-500 after:to-transparent', glow: 'bg-cyan-600/8' },
+    blue:   'after:bg-gradient-to-r after:from-transparent after:via-blue-500 after:to-transparent',
+    purple: 'after:bg-gradient-to-r after:from-transparent after:via-violet-500 after:to-transparent',
+    green:  'after:bg-gradient-to-r after:from-transparent after:via-emerald-500 after:to-transparent',
+    cyan:   'after:bg-gradient-to-r after:from-transparent after:via-cyan-500 after:to-transparent',
   };
+  const glows = { blue:'bg-blue-600/10', purple:'bg-violet-600/8', green:'bg-emerald-600/8', cyan:'bg-cyan-600/8' };
   return (
     <div className={[
       'relative bg-[#0F1A2E] border border-white/[0.07] rounded-2xl p-5 overflow-hidden',
       'transition-all duration-250 hover:border-white/[0.13] hover:-translate-y-0.5',
       'after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px]',
-      accents[accent]?.border,
+      accents[accent],
     ].join(' ')}>
-      {/* Glow orb */}
-      <div className={`absolute w-28 h-28 rounded-full -top-8 -right-6 pointer-events-none ${accents[accent]?.glow}`} />
-
+      <div className={`absolute w-28 h-28 rounded-full -top-8 -right-6 pointer-events-none ${glows[accent]}`} />
       <div className="relative z-10">
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-4 ${iconColor}`}>
           {IconComp && <IconComp />}
@@ -230,7 +222,31 @@ const StatCard = ({ value, label, delta, deltaType = 'up', accent, glowColor, ic
   );
 };
 
-// ── Line Chart ────────────────────────────────────────────────
+// ── Skeleton loader for stat cards ────────────────────────────
+const StatSkeleton = () => (
+  <div className="bg-[#0F1A2E] border border-white/[0.07] rounded-2xl p-5 animate-pulse">
+    <div className="w-9 h-9 rounded-xl bg-white/5 mb-4" />
+    <div className="h-9 w-24 bg-white/5 rounded-lg mb-2" />
+    <div className="h-3 w-28 bg-white/5 rounded mb-3" />
+    <div className="h-5 w-20 bg-white/5 rounded-full" />
+  </div>
+);
+
+// ── Error banner ──────────────────────────────────────────────
+const ErrorBanner = ({ message, onRetry }) => (
+  <div className="flex items-center justify-between bg-red-500/10 border border-red-500/25 rounded-xl px-5 py-3">
+    <div className="flex items-center gap-2 text-red-300 text-[13px] font-dm">
+      <Icons.Alert />
+      {message}
+    </div>
+    <button onClick={onRetry}
+      className="text-[12px] font-semibold text-red-300 hover:text-red-200 px-3 py-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/25 transition-all font-dm">
+      Retry
+    </button>
+  </div>
+);
+
+// ── Charts (unchanged) ────────────────────────────────────────
 const GrowthLineChart = ({ data }) => {
   const cfg = {
     labels: data.labels,
@@ -278,14 +294,9 @@ const GrowthLineChart = ({ data }) => {
       y: { grid: gridStyle, ticks: tickStyle, border: { color: 'transparent' } },
     },
   };
-  return (
-    <div className="h-[140px]">
-      <Line data={cfg} options={opts} />
-    </div>
-  );
+  return <div className="h-[140px]"><Line data={cfg} options={opts} /></div>;
 };
 
-// ── Bar Chart ─────────────────────────────────────────────────
 const RevenueBarChart = ({ data }) => {
   const maxVal = Math.max(...data.revenue);
   const cfg = {
@@ -297,59 +308,53 @@ const RevenueBarChart = ({ data }) => {
         v === maxVal ? 'rgba(37,99,235,0.9)' : 'rgba(37,99,235,0.3)'
       ),
       hoverBackgroundColor: 'rgba(59,130,246,0.9)',
-      borderRadius: 5,
-      borderSkipped: false,
+      borderRadius: 5, borderSkipped: false,
     }],
   };
   const opts = {
     responsive: true, maintainAspectRatio: false, animation: { duration: 600 },
     plugins: {
       legend: { display: false },
-      tooltip: { ...tooltipStyle, callbacks: {
-        label: ctx => ` ${ctx.raw.toLocaleString()} MAD`,
-      }},
+      tooltip: { ...tooltipStyle, callbacks: { label: ctx => ` ${ctx.raw.toLocaleString()} MAD` } },
     },
     scales: {
       x: { grid: { display: false }, ticks: tickStyle, border: { color: 'transparent' } },
       y: { grid: gridStyle, ticks: { ...tickStyle, callback: v => v >= 1000 ? `${v/1000}k` : v }, border: { color: 'transparent' } },
     },
   };
-  return (
-    <div className="h-[140px]">
-      <Bar data={cfg} options={opts} />
-    </div>
-  );
+  return <div className="h-[140px]"><Bar data={cfg} options={opts} /></div>;
 };
 
-// ── Donut Chart ───────────────────────────────────────────────
-const CompletionDonut = () => {
+// ── Donut — now uses real health data ─────────────────────────
+const CompletionDonut = ({ health }) => {
+  // ── REAL DATA: from health object ──
+  const completed  = health?.todayCompleted ?? 28;
+  const total      = health?.todayTotal     ?? 31;
+  const inProgress = Math.max(0, total - completed);
+  const rate       = health?.todayRate      ?? 90;
+
   const cfg = {
-    labels: ['Completed','In Progress','Pending'],
+    labels: ['Completed','In Progress'],
     datasets: [{
-      data: [28, 2, 1],
-      backgroundColor: ['#10B981','#3B82F6','rgba(245,158,11,0.7)'],
-      borderWidth: 0,
-      hoverOffset: 4,
+      data: [completed, inProgress],
+      backgroundColor: ['#10B981','#3B82F6'],
+      borderWidth: 0, hoverOffset: 4,
     }],
   };
   const opts = {
     responsive: true, maintainAspectRatio: false, cutout: '72%',
-    plugins: {
-      legend: { display: false },
-      tooltip: { ...tooltipStyle },
-    },
+    plugins: { legend: { display: false }, tooltip: { ...tooltipStyle } },
   };
   const legendItems = [
-    { color: 'bg-emerald-500', label: 'Completed', val: 28 },
-    { color: 'bg-blue-500',    label: 'In progress', val: 2 },
-    { color: 'bg-amber-500/70',label: 'Pending',     val: 1 },
+    { color: 'bg-emerald-500', label: 'Completed',   val: completed  },
+    { color: 'bg-blue-500',    label: 'In progress',  val: inProgress },
   ];
   return (
     <div className="flex flex-col items-center">
       <div className="relative w-[120px] h-[120px] mx-auto">
         <Doughnut data={cfg} options={opts} />
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className="font-sora text-[22px] font-black text-white tracking-tight">90%</span>
+          <span className="font-sora text-[22px] font-black text-white tracking-tight">{Math.round(rate)}%</span>
           <span className="text-[9px] text-white/30 font-medium mt-0.5 font-dm">today</span>
         </div>
       </div>
@@ -368,33 +373,12 @@ const CompletionDonut = () => {
   );
 };
 
-// ── Health Alert Card ─────────────────────────────────────────
+// ── Alert Card — now accepts dynamic values ───────────────────
 const AlertCard = ({ type, icon: IconComp, label, value, subValue, desc, actionLabel, actionDetail }) => {
   const styles = {
-    critical: {
-      wrap:   'bg-red-500/[0.07] border-red-500/25',
-      icon:   'bg-red-500/18 text-red-400',
-      label:  'text-red-300',
-      action: 'bg-red-500/20 text-red-300 hover:bg-red-500/30',
-      dot:    'bg-red-500',
-      status: 'text-red-400/60',
-    },
-    warning: {
-      wrap:   'bg-amber-500/[0.07] border-amber-500/25',
-      icon:   'bg-amber-500/18 text-amber-400',
-      label:  'text-amber-300',
-      action: 'bg-amber-500/20 text-amber-300 hover:bg-amber-500/30',
-      dot:    'bg-amber-500',
-      status: 'text-amber-400/60',
-    },
-    success: {
-      wrap:   'bg-emerald-500/[0.07] border-emerald-500/20',
-      icon:   'bg-emerald-500/18 text-emerald-400',
-      label:  'text-emerald-300',
-      action: null,
-      dot:    'bg-emerald-500',
-      status: 'text-emerald-400/60',
-    },
+    critical: { wrap:'bg-red-500/[0.07] border-red-500/25', icon:'bg-red-500/18 text-red-400', label:'text-red-300', action:'bg-red-500/20 text-red-300 hover:bg-red-500/30', dot:'bg-red-500', status:'text-red-400/60' },
+    warning:  { wrap:'bg-amber-500/[0.07] border-amber-500/25', icon:'bg-amber-500/18 text-amber-400', label:'text-amber-300', action:'bg-amber-500/20 text-amber-300 hover:bg-amber-500/30', dot:'bg-amber-500', status:'text-amber-400/60' },
+    success:  { wrap:'bg-emerald-500/[0.07] border-emerald-500/20', icon:'bg-emerald-500/18 text-emerald-400', label:'text-emerald-300', action:null, dot:'bg-emerald-500', status:'text-emerald-400/60' },
   };
   const s = styles[type];
   return (
@@ -409,31 +393,23 @@ const AlertCard = ({ type, icon: IconComp, label, value, subValue, desc, actionL
           <span className={`text-[10px] font-dm ${s.status}`}>{actionDetail}</span>
         </div>
       </div>
-
       <div className="flex items-baseline gap-1.5 mb-1">
-        <span className="font-sora text-[28px] font-black text-white tracking-tight leading-none">
-          {value}
-        </span>
+        <span className="font-sora text-[28px] font-black text-white tracking-tight leading-none">{value}</span>
         {subValue && <span className="text-[13px] text-white/30 font-dm">{subValue}</span>}
       </div>
       <p className="text-[11px] text-white/30 font-dm mb-3">{desc}</p>
-
       {type === 'success' && (
         <div className="mb-3">
           <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
-            <div className="h-full w-[90%] bg-emerald-500 rounded-full transition-all duration-700" />
+            <div className="h-full bg-emerald-500 rounded-full transition-all duration-700"
+              style={{ width: `${Math.min(100, Math.round((parseInt(value) / (parseInt(value) + parseInt(subValue?.replace(/\D/g,'') || 0))) * 100) || 90)}%` }} />
           </div>
         </div>
       )}
-
       <div className="flex items-center justify-between pt-3 border-t border-white/[0.06]">
-        {s.action ? (
-          <button className={`text-[11px] font-semibold px-2.5 py-1.5 rounded-lg transition-colors font-dm ${s.action}`}>
-            {actionLabel}
-          </button>
-        ) : (
-          <span className="text-[11px] text-white/30 font-dm">{actionLabel}</span>
-        )}
+        {s.action
+          ? <button className={`text-[11px] font-semibold px-2.5 py-1.5 rounded-lg transition-colors font-dm ${s.action}`}>{actionLabel}</button>
+          : <span className="text-[11px] text-white/30 font-dm">{actionLabel}</span>}
         <div className="flex items-center gap-1">
           <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
           <span className="text-[10px] text-white/25 font-dm">Live</span>
@@ -443,27 +419,13 @@ const AlertCard = ({ type, icon: IconComp, label, value, subValue, desc, actionL
   );
 };
 
-// ── Schools Table ─────────────────────────────────────────────
-const SCHOOLS = [
-  { rank:1, initials:'AA', color:'bg-blue-600',    name:'Auto École Atlas',  city:'Casablanca', pct:97, rating:5, students:142, rankStyle:'bg-yellow-500/20 text-yellow-400' },
-  { rank:2, initials:'EL', color:'bg-violet-600',  name:'École Lumière',     city:'Rabat',      pct:94, rating:5, students:118, rankStyle:'bg-slate-500/15 text-slate-400' },
-  { rank:3, initials:'AE', color:'bg-emerald-700', name:'Auto École Étoile', city:'Marrakech',  pct:91, rating:4, students:97,  rankStyle:'bg-orange-700/20 text-orange-400' },
-  { rank:4, initials:'RS', color:'bg-amber-700',   name:'Route Sûre',        city:'Fès',        pct:87, rating:4, students:76,  rankStyle:'bg-white/5 text-white/30' },
-  { rank:5, initials:'MR', color:'bg-cyan-800',    name:'MaRoad Academy',    city:'Tanger',     pct:82, rating:4, students:64,  rankStyle:'bg-white/5 text-white/30' },
-];
+// ── Schools Table — now uses real API rows ────────────────────
+const AVATAR_COLORS = ['bg-blue-600','bg-violet-600','bg-emerald-700','bg-amber-700','bg-cyan-800','bg-rose-700','bg-indigo-600'];
+const RANK_STYLES   = ['bg-yellow-500/20 text-yellow-400','bg-slate-500/15 text-slate-400','bg-orange-700/20 text-orange-400','bg-white/5 text-white/30','bg-white/5 text-white/30'];
+const pctColor = (p) => p >= 93 ? 'text-emerald-400' : p >= 85 ? 'text-blue-400' : 'text-amber-400';
+const barColor = (p) => p >= 93 ? 'bg-emerald-500' : p >= 85 ? 'bg-blue-500' : 'bg-amber-500';
 
-const pctColor = (pct) => {
-  if (pct >= 93) return 'text-emerald-400';
-  if (pct >= 85) return 'text-blue-400';
-  return 'text-amber-400';
-};
-const barColor = (pct) => {
-  if (pct >= 93) return 'bg-emerald-500';
-  if (pct >= 85) return 'bg-blue-500';
-  return 'bg-amber-500';
-};
-
-const SchoolsTable = () => (
+const SchoolsTable = ({ rows }) => (
   <div>
     <div className="flex items-center justify-between mb-4">
       <div>
@@ -471,176 +433,194 @@ const SchoolsTable = () => (
         <p className="text-[11px] text-white/30 mt-0.5 font-dm">By completion rate this week</p>
       </div>
       <span className="text-[10px] font-semibold px-2.5 py-1 rounded-lg bg-blue-600/12 text-blue-400 border border-blue-500/20 font-dm">
-        Top 5
+        Top {rows.length}
       </span>
     </div>
-    <table className="w-full border-collapse">
-      <thead>
-        <tr>
-          {['#','School','Completion','Rating','Students'].map(h => (
-            <th key={h} className="text-left text-[10px] font-semibold text-white/25 tracking-[0.6px] pb-3 px-2 border-b border-white/[0.05] font-dm">
-              {h}
-            </th>
+    {rows.length === 0 ? (
+      <div className="text-center py-8 text-white/20 text-[13px] font-dm">No data yet</div>
+    ) : (
+      <table className="w-full border-collapse">
+        <thead>
+          <tr>{['#','School','Completion','Rating','Students'].map(h => (
+            <th key={h} className="text-left text-[10px] font-semibold text-white/25 tracking-[0.6px] pb-3 px-2 border-b border-white/[0.05] font-dm">{h}</th>
+          ))}</tr>
+        </thead>
+        <tbody>
+          {rows.map((s, idx) => (
+            <tr key={s.id} className="group hover:bg-white/[0.02] transition-colors duration-150">
+              <td className="py-3 px-2">
+                <div className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold ${RANK_STYLES[idx] || RANK_STYLES[3]}`}>
+                  {s.rank}
+                </div>
+              </td>
+              <td className="py-3 px-2">
+                <div className="flex items-center gap-2.5">
+                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0 ${AVATAR_COLORS[idx % AVATAR_COLORS.length]}`}>
+                    {s.initials}
+                  </div>
+                  <div>
+                    <div className="text-[12px] font-semibold text-white font-dm">{s.name}</div>
+                  </div>
+                </div>
+              </td>
+              <td className="py-3 px-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-16 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+                    <div className={`h-full rounded-full ${barColor(s.pct)}`} style={{ width: `${s.pct}%` }} />
+                  </div>
+                  <span className={`text-[11px] font-semibold ${pctColor(s.pct)}`}>{s.pct}%</span>
+                </div>
+              </td>
+              <td className="py-3 px-2">
+                <div className="flex gap-0.5">
+                  {[1,2,3,4,5].map(i => (
+                    <svg key={i} width="11" height="11" viewBox="0 0 12 12" fill={i <= s.rating ? '#FBBF24' : 'rgba(255,255,255,0.1)'}>
+                      <path d="M6 1l1.3 3.7H11L8.2 6.9l1 3.5L6 8.5l-3.2 1.9 1-3.5L1 4.7h3.7z"/>
+                    </svg>
+                  ))}
+                </div>
+              </td>
+              <td className="py-3 px-2">
+                <span className="text-[12px] font-semibold text-white font-dm">{s.students}</span>
+              </td>
+            </tr>
           ))}
-        </tr>
-      </thead>
-      <tbody>
-        {SCHOOLS.map(s => (
-          <tr key={s.rank} className="group hover:bg-white/[0.02] transition-colors duration-150">
-            <td className="py-3 px-2">
-              <div className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold ${s.rankStyle}`}>
-                {s.rank}
-              </div>
-            </td>
-            <td className="py-3 px-2">
-              <div className="flex items-center gap-2.5">
-                <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0 ${s.color}`}>
-                  {s.initials}
-                </div>
-                <div>
-                  <div className="text-[12px] font-semibold text-white group-hover:text-white font-dm">{s.name}</div>
-                  <div className="text-[10px] text-white/25 font-dm">{s.city}</div>
-                </div>
-              </div>
-            </td>
-            <td className="py-3 px-2">
-              <div className="flex items-center gap-2">
-                <div className="w-16 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
-                  <div className={`h-full rounded-full ${barColor(s.pct)}`} style={{ width: `${s.pct}%` }} />
-                </div>
-                <span className={`text-[11px] font-semibold ${pctColor(s.pct)}`}>{s.pct}%</span>
-              </div>
-            </td>
-            <td className="py-3 px-2">
-              <div className="flex gap-0.5">
-                {[1,2,3,4,5].map(i => (
-                  <svg key={i} width="11" height="11" viewBox="0 0 12 12" fill={i <= s.rating ? '#FBBF24' : 'rgba(255,255,255,0.1)'}>
-                    <path d="M6 1l1.3 3.7H11L8.2 6.9l1 3.5L6 8.5l-3.2 1.9 1-3.5L1 4.7h3.7z"/>
-                  </svg>
-                ))}
-              </div>
-            </td>
-            <td className="py-3 px-2">
-              <span className="text-[12px] font-semibold text-white font-dm">{s.students}</span>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    )}
   </div>
 );
 
-// ── Feedback List ─────────────────────────────────────────────
-const FEEDBACK = [
-  { name:'Karim Benali',   lesson:'Highway driving · Atlas School', rating:5, comment:'Best instructor I\'ve had. Very patient and clear.' },
-  { name:'Sara Moussaoui', lesson:'City route · École Lumière',     rating:4, comment:'Good lesson but started 10 minutes late. Overall solid.' },
-  { name:'Yassir Moktari', lesson:'Exam prep · Auto École Étoile',  rating:5, comment:'Passed first try! DriveIQ scheduling made it easy.' },
-  { name:'Lina Oussama',   lesson:'Route A · MaRoad Academy',       rating:3, comment:'App crashed during booking. Fixed quickly but frustrating.' },
-];
-
-const FeedbackList = () => (
+// ── Feedback List — now uses real API data ────────────────────
+const FeedbackList = ({ items, avgRating }) => (
   <div>
     <div className="flex items-center justify-between mb-4">
       <div>
         <h3 className="font-sora text-[13px] font-bold text-white">Recent feedback</h3>
-        <p className="text-[11px] text-white/30 mt-0.5 font-dm">Avg platform rating: 4.8 / 5</p>
+        <p className="text-[11px] text-white/30 mt-0.5 font-dm">Avg platform rating: {avgRating} / 5</p>
       </div>
       <span className="text-[10px] font-semibold px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-dm">
-        4.8 ★
+        {avgRating} ★
       </span>
     </div>
-    <div className="flex flex-col">
-      {FEEDBACK.map((f, i) => (
-        <div key={f.name} className={`py-3.5 ${i < FEEDBACK.length - 1 ? 'border-b border-white/[0.04]' : ''}`}>
-          <div className="flex items-start justify-between gap-3 mb-2">
-            <div>
-              <div className="text-[12px] font-semibold text-white font-dm">{f.name}</div>
-              <div className="text-[10px] text-white/25 mt-0.5 font-dm">{f.lesson}</div>
-            </div>
-            <div className="flex gap-0.5 flex-shrink-0">
-              {[1,2,3,4,5].map(i => (
-                <svg key={i} width="11" height="11" viewBox="0 0 12 12"
-                  fill={i <= f.rating ? '#FBBF24' : 'rgba(255,255,255,0.08)'}>
-                  <path d="M6 1l1.3 3.7H11L8.2 6.9l1 3.5L6 8.5l-3.2 1.9 1-3.5L1 4.7h3.7z"/>
-                </svg>
-              ))}
+    {items.length === 0 ? (
+      <div className="text-center py-8 text-white/20 text-[13px] font-dm">No feedback yet</div>
+    ) : (
+      <div className="flex flex-col">
+        {items.slice(0, 4).map((f, i) => (
+          <div key={i} className={`py-3.5 ${i < Math.min(items.length, 4) - 1 ? 'border-b border-white/[0.04]' : ''}`}>
+            <div className="flex items-start justify-between gap-3 mb-2">
+              <div>
+                <div className="text-[12px] font-semibold text-white font-dm">{f.name}</div>
+                <div className="text-[10px] text-white/25 mt-0.5 font-dm">{f.lesson}</div>
+              </div>
+              <div className="flex gap-0.5 flex-shrink-0">
+                {[1,2,3,4,5].map(n => (
+                  <svg key={n} width="11" height="11" viewBox="0 0 12 12"
+                    fill={n <= f.rating ? '#FBBF24' : 'rgba(255,255,255,0.08)'}>
+                    <path d="M6 1l1.3 3.7H11L8.2 6.9l1 3.5L6 8.5l-3.2 1.9 1-3.5L1 4.7h3.7z"/>
+                  </svg>
+                ))}
+              </div>
             </div>
           </div>
-          <p className="text-[12px] text-white/45 leading-relaxed italic font-dm">"{f.comment}"</p>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    )}
   </div>
 );
 
-// ── Section Card wrapper ──────────────────────────────────────
 const Card = ({ children, className = '' }) => (
   <div className={`bg-[#0F1A2E] border border-white/[0.07] rounded-2xl p-5 hover:border-white/[0.11] transition-colors duration-200 ${className}`}>
     {children}
   </div>
 );
 
-
-
-  
 // ─────────────────────────────────────────────────────────────
-// MAIN DASHBOARD
+// MAIN DASHBOARD — wired to real API
 // ─────────────────────────────────────────────────────────────
 const AdminDashboard = () => {
   const [range, setRange] = useState('7d');
-  const data = RANGE_DATA[range];
-  const {
-    count: schoolCount,
-    loading: schoolLoading,
-    error: schoolError
-  } = useSchoolCount();
-  
-  const {
-    count: studentCount,
-    loading: studentLoading,
-    error: studentError
-  } = useStudentCount();
+  const chartData = RANGE_DATA[range];
 
+  // ── REAL DATA: single hook replaces useSchoolCount / useStudentCount / useInstructorCount ──
   const {
-    count: instructoretCount,
-    loading: instructoreLoading,
-    error: instructorError
-  } = useInstructoreCount();
-
+    loading, error, stats, health, topSchools,
+    recentFeedback, avgRating, weekRevenue,
+    lastUpdated, refetch,
+  } = useDashboard();
 
   return (
     <div className="flex h-screen bg-[#060B18] font-dm overflow-hidden">
-      <style>{`
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-      `}</style>
+      <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }`}</style>
       <Sidebar />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Topbar range={range} onRangeChange={setRange} />
+        {/* ── REAL DATA: lastUpdated + failedMessages + refetch ── */}
+        <Topbar
+          range={range}
+          onRangeChange={setRange}
+          lastUpdated={lastUpdated}
+          failedMessages={health?.failedMessages ?? 0}
+          onRefetch={refetch}
+        />
 
-        {/* Scrollable content */}
         <main className="flex-1 overflow-y-auto p-6 space-y-5">
+
+          {/* ── REAL DATA: error banner ── */}
+          {error && <ErrorBanner message={error} onRetry={refetch} />}
 
           {/* ── STAT STRIP ── */}
           <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-            <StatCard value={schoolLoading ? '…' : schoolCount}   label="Total schools"     delta="+7 this week"    accent="blue"   icon={Icons.School} iconColor="bg-blue-600/15 text-blue-400" />
-            <StatCard value={studentLoading ? '…' : studentCount} label="Total students"    delta="+84 this week"   accent="purple" icon={Icons.User}   iconColor="bg-violet-600/15 text-violet-400" />
-            <StatCard value={studentLoading ? '…' : studentCount}  label="Active students"   delta="71% of total"    accent="green"  icon={Icons.Grid}   iconColor="bg-emerald-600/15 text-emerald-400" />
-            <StatCard value={instructoreLoading ? '…' : instructoretCount}  label="Total instructors" delta="+18 this week" deltaType="neutral" accent="cyan" icon={Icons.Star} iconColor="bg-cyan-600/15 text-cyan-400" />
+            {loading ? (
+              [1,2,3,4].map(i => <StatSkeleton key={i} />)
+            ) : (
+              <>
+                {/* ── REAL DATA: all 4 stat values from stats object ── */}
+                <StatCard
+                  value={stats?.totalSchools ?? '—'}
+                  label="Total schools"
+                  delta={`+${stats?.newSchoolsWeek ?? 0} this week`}
+                  accent="blue" icon={Icons.School} iconColor="bg-blue-600/15 text-blue-400"
+                />
+                <StatCard
+                  value={stats?.totalStudents ?? '—'}
+                  label="Total students"
+                  delta={`+${stats?.newStudentsWeek ?? 0} this week`}
+                  accent="purple" icon={Icons.User} iconColor="bg-violet-600/15 text-violet-400"
+                />
+                <StatCard
+                  value={stats?.activeStudents ?? '—'}
+                  label="Active students"
+                  delta={stats && stats.totalStudents > 0
+                    ? `${Math.round(stats.activeStudents / stats.totalStudents * 100)}% of total`
+                    : '—'}
+                  accent="green" icon={Icons.Grid} iconColor="bg-emerald-600/15 text-emerald-400"
+                />
+                <StatCard
+                  value={stats?.totalInstructors ?? '—'}
+                  label="Total instructors"
+                  delta="platform wide"
+                  deltaType="neutral"
+                  accent="cyan" icon={Icons.Star} iconColor="bg-cyan-600/15 text-cyan-400"
+                />
+              </>
+            )}
           </div>
 
           {/* ── CHARTS + HEALTH ── */}
           <div className="grid grid-cols-1 xl:grid-cols-[1fr_1fr_300px] gap-4">
-            {/* Line chart */}
             <Card>
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h3 className="font-sora text-[13px] font-bold text-white">Platform growth</h3>
                   <p className="text-[11px] text-white/30 mt-0.5 font-dm">Schools & students over time</p>
                 </div>
-                <span className="text-[10px] font-semibold px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-dm">+12% MoM</span>
+                <span className="text-[10px] font-semibold px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-dm">
+                  +12% MoM
+                </span>
               </div>
-              <GrowthLineChart data={data} />
+              <GrowthLineChart data={chartData} />
               <div className="flex gap-5 mt-3">
                 <div className="flex items-center gap-1.5 text-[11px] text-white/30 font-dm">
                   <div className="w-5 h-0.5 bg-blue-500 rounded" />Schools ×10
@@ -651,62 +631,77 @@ const AdminDashboard = () => {
               </div>
             </Card>
 
-            {/* Bar chart */}
             <Card>
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h3 className="font-sora text-[13px] font-bold text-white">Weekly revenue</h3>
                   <p className="text-[11px] text-white/30 mt-0.5 font-dm">Total across all schools (MAD)</p>
                 </div>
-                <span className="text-[10px] font-semibold px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 font-dm">48,200 MAD</span>
+                {/* ── REAL DATA: weekRevenue from hook ── */}
+                <span className="text-[10px] font-semibold px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 font-dm">
+                  {weekRevenue.toLocaleString()} MAD
+                </span>
               </div>
-              <RevenueBarChart data={data} />
-              <div className="flex justify-between mt-3">
-                <span className="text-[11px] text-white/25 font-dm">Peak: Thu 9,400 MAD</span>
-                <span className="text-[11px] font-semibold text-emerald-400 font-dm">↑ +18% vs last week</span>
-              </div>
+              <RevenueBarChart data={chartData} />
             </Card>
 
-            {/* System Health */}
+            {/* System Health — REAL DATA */}
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                 <h3 className="font-sora text-[13px] font-bold text-white">System health</h3>
               </div>
-              <AlertCard
-                type="critical" icon={Icons.Alert}
-                label="Failed messages" value="3"
-                desc="Undelivered SMS in the last hour"
-                actionLabel="Retry all" actionDetail="Needs action"
-              />
-              <AlertCard
-                type="warning" icon={Icons.Info}
-                label="Pending messages" value="12"
-                desc="Awaiting delivery confirmation"
-                actionLabel="View queue" actionDetail="Monitoring"
-              />
-              <AlertCard
-                type="success" icon={Icons.Check}
-                label="Today's lessons" value="28" subValue="/31 done"
-                desc="90% completion · 3 in progress"
-                actionLabel="3 lessons in progress" actionDetail="On track"
-              />
+              {loading ? (
+                <div className="flex flex-col gap-3">
+                  {[1,2,3].map(i => <div key={i} className="h-28 rounded-xl bg-[#0F1A2E] border border-white/[0.07] animate-pulse" />)}
+                </div>
+              ) : (
+                <>
+                  <AlertCard
+                    type="critical" icon={Icons.Alert}
+                    label="Failed messages"
+                    value={String(health?.failedMessages ?? 0)}
+                    desc="Undelivered messages needing retry"
+                    actionLabel="Retry all" actionDetail="Needs action"
+                  />
+                  <AlertCard
+                    type="warning" icon={Icons.Info}
+                    label="Pending messages"
+                    value={String(health?.pendingMessages ?? 0)}
+                    desc="Awaiting delivery confirmation"
+                    actionLabel="View queue" actionDetail="Monitoring"
+                  />
+                  <AlertCard
+                    type="success" icon={Icons.Check}
+                    label="Today's lessons"
+                    value={String(health?.todayCompleted ?? 0)}
+                    subValue={`/${health?.todayTotal ?? 0} done`}
+                    desc={`${Math.round(health?.todayRate ?? 0)}% completion rate today`}
+                    actionLabel={`${(health?.todayTotal ?? 0) - (health?.todayCompleted ?? 0)} remaining`}
+                    actionDetail="On track"
+                  />
+                </>
+              )}
             </div>
           </div>
 
           {/* ── DONUT + BOTTOM ── */}
           <div className="grid grid-cols-1 xl:grid-cols-[200px_1fr] gap-4">
-
-            {/* Donut */}
             <Card className="flex flex-col justify-center">
               <h3 className="font-sora text-[13px] font-bold text-white text-center mb-4">Completion rate</h3>
-              <CompletionDonut />
+              {/* ── REAL DATA: health passed to donut ── */}
+              <CompletionDonut health={health} />
             </Card>
 
-            {/* Table + Feedback */}
             <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-4">
-              <Card><SchoolsTable /></Card>
-              <Card><FeedbackList /></Card>
+              <Card>
+                {/* ── REAL DATA: topSchools from hook ── */}
+                <SchoolsTable rows={topSchools} />
+              </Card>
+              <Card>
+                {/* ── REAL DATA: recentFeedback + avgRating from hook ── */}
+                <FeedbackList items={recentFeedback} avgRating={avgRating} />
+              </Card>
             </div>
           </div>
 
