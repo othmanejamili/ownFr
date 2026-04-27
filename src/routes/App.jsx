@@ -6,7 +6,7 @@ import AdminDashboard     from '../pages/Dashboard/AdminDashboard';
 import LogoutButton       from '../pages/auth/Logout';
 import ProtectedRoute     from '../components/ProtectedRoute';
 import ForgotPassword from '../pages/auth/ForgotPassword';
-
+import Pricing from '../pages/Home/Pricing';
 function App() {
   return (
     <Router>
@@ -14,6 +14,7 @@ function App() {
 
         {/* Public routes */}
         <Route path="/"         element={<HomePage />} />
+        <Route path="/pricing" element={<Pricing />} />
         <Route path="/login"    element={<Login />} />
         <Route path="/logout"   element={<LogoutButton />} />
         <Route path="/register" element={<Register />} />
