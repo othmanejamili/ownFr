@@ -3,7 +3,7 @@ import { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
-const API_URL = `${import.meta.env.VITE_API_URL}`; 
+const API_URL = `${import.meta.env.VITE_API_URL}`;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser]                       = useState(null);
@@ -50,6 +50,87 @@ export const AuthProvider = ({ children }) => {
       return { success: true, userData };
     } catch (err) {
       const msg = err.response?.data?.error || 'Login failed.';
+      setError(msg);
+      return { success: false, message: msg };
+    }
+  };
+
+  // ── Register (school owner — 3 sequential API calls) ────────
+  //
+  //  1. POST /auth/register/     → creates user (role=A, is_active=False)
+  //                                returns { access, refresh, user_id, username, … }
+  //  2. POST /drivingschool/     → creates school linked to the new user
+  //  3. POST /schoolsubscription/→ creates subscription in 'trialing' state
+  //
+  //  The account is NOT activated yet — admin must approve.
+  //  We store the token in sessionStorage so the school + subscription
+  //  calls succeed, but we do NOT set isAuthenticated (user can't navigate).
+  //  After submit the UI shows the "pending review" confirmation screen.
+  //
+  const register = async ({ account, school, planId }) => {
+    setError(null);
+    try {
+      // ── 1. Create user account ──
+      const { data: regData } = await axios.post(`${API_URL}/auth/register/`, {
+        first_name: account.first_name,
+        last_name:  account.last_name,
+        username:   account.username,
+        email:      account.email,
+        password:   account.password,
+        role:       'A',                  // school owner = Admin
+      });
+
+      const { access, refresh, user_id, username, email: userEmail, first_name, last_name } = regData;
+
+      // Store token temporarily so the next two calls are authenticated.
+      // We deliberately skip setIsAuthenticated — account is pending review.
+      sessionStorage.setItem('access',  access);
+      sessionStorage.setItem('refresh', refresh);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+
+      // ── 2. Create driving school ──
+      const { data: schoolData } = await axios.post(`${API_URL}/drivingschool/`, {
+        name:         school.name,
+        address:      school.address,
+        email:        school.email,
+        phone_number: school.phone_number,
+      });
+
+      // ── 3. Create subscription (trialing — gated until admin approves) ──
+      const now     = new Date();
+      const trialEnd = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+      await axios.post(`${API_URL}/schoolsubscription/`, {
+        school:               schoolData.id,
+        plan:                 planId,
+        status:               'trialing',
+        current_period_start: now.toISOString(),
+        current_period_end:   trialEnd.toISOString(),
+      });
+
+      return {
+        success: true,
+        email: userEmail,   // used for the confirmation screen
+      };
+
+    } catch (err) {
+      // Clean up the temp token on failure so nothing leaks
+      _clearStorage();
+      delete axios.defaults.headers.common['Authorization'];
+
+      const data = err.response?.data;
+
+      // Return structured field errors when the backend provides them,
+      // so RegisterPage can map them back to the right form field.
+      if (data && typeof data === 'object' && !data.error && !data.detail) {
+        return {
+          success:     false,
+          fieldErrors: data,                          // e.g. { username: ['already taken'] }
+          message:     'Please fix the errors below.',
+        };
+      }
+
+      const msg = data?.error || data?.detail || 'Registration failed. Please try again.';
       setError(msg);
       return { success: false, message: msg };
     }
@@ -112,7 +193,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   // ── Password reset — step 3: set new password ───────────────
-  // In resetPassword function — AuthContext.jsx
   const resetPassword = async (email, code, newPassword) => {
     setError(null);
     try {
@@ -123,7 +203,7 @@ export const AuthProvider = ({ children }) => {
       });
       return { success: true, message: data.message || 'Password reset successfully.' };
     } catch (err) {
-      console.log('Full error response:', err.response?.data);  // ← add this
+      console.log('Full error response:', err.response?.data);
       const msg = err.response?.data?.error || 'Failed to reset password.';
       setError(msg);
       return { success: false, message: msg };
@@ -154,6 +234,7 @@ export const AuthProvider = ({ children }) => {
       // Auth
       login,
       logout,
+      register,
       refreshToken,
 
       // Password reset (3 steps)

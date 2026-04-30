@@ -5,6 +5,7 @@
 import { useState } from 'react';
 import NavBar from './NavBar';
 import usePlans from './Useplans';
+import { Link } from 'react-router-dom';
 
 // ─── Shared primitives (unchanged) ──────────────────────────
 const LogoMark = ({ size = 32 }) => (
@@ -170,10 +171,10 @@ const PlanCard = ({ plan, billing }) => {
         </p>
       </div>
 
-      <button className={`relative z-10 w-full py-3 rounded-xl text-[14px] font-bold
+      <Link to={'/register'} className={`relative z-10 w-full py-3 rounded-xl text-[14px] font-bold
         transition-all duration-200 active:scale-[0.99] mb-6 font-dm ${a.btn}`}>
         {plan.btnLabel}
-      </button>
+      </Link>
 
       <div className="relative z-10 h-px bg-white/[0.06] mb-5" />
 
