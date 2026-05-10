@@ -4,6 +4,7 @@ import Login              from '../pages/auth/LoginPage';
 import HomePage           from '../pages/Home/HomePage';
 import AdminDashboard     from '../pages/Dashboard/Admin/AdminDashboard';
 import OwnerDashboard from '../pages/Dashboard/Owner/OwnerDashboard';
+import OwnerDashboard     from '../pages/Dashboard/Owner/OwnerDashboard';
 import LogoutButton       from '../pages/auth/Logout';
 import ProtectedRoute     from '../components/ProtectedRoute';
 import ForgotPassword from '../pages/auth/ForgotPassword';
