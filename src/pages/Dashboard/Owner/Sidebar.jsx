@@ -98,22 +98,22 @@ const Sidebar = () => (
     {/* Nav */}
     <nav className="flex-1 pt-1">
       <SectionLabel text="MAIN" />
-      <NavItem to="/dashboard"     icon={icons.grid}        label="Dashboard" />
-      <NavItem to="/schedule"      icon={icons.calendar}    label="Schedule"    badge={31}  badgeColor="blue" />
-      <NavItem to="/students"      icon={icons.students}    label="Students"    badge={142} badgeColor="blue" />
-      <NavItem to="/instructors"   icon={icons.instructors} label="Instructors" />
+      <NavItem      icon={icons.grid}        label="Dashboard" />
+      <NavItem       icon={icons.calendar}    label="Schedule"    badge={31}  badgeColor="blue" />
+      <NavItem      icon={icons.students}    label="Students"    badge={142} badgeColor="blue" />
+      <NavItem    icon={icons.instructors} label="Instructors" />
 
       <SectionLabel text="FINANCE" />
-      <NavItem to="/payments"      icon={icons.payments}    label="Payments"    badge={3}   badgeColor="amber" />
-      <NavItem to="/invoices"      icon={icons.invoices}    label="Invoices" />
-      <NavItem to="/reports"       icon={icons.reports}     label="Reports" />
+      <NavItem       icon={icons.payments}    label="Payments"    badge={3}   badgeColor="amber" />
+      <NavItem       icon={icons.invoices}    label="Invoices" />
+      <NavItem        icon={icons.reports}     label="Reports" />
 
       <SectionLabel text="ENGAGE" />
-      <NavItem to="/messages"      icon={icons.messages}    label="Messages"    badge={5}   badgeColor="red" />
-      <NavItem to="/feedback"      icon={icons.feedback}    label="Feedback" />
+      <NavItem       icon={icons.messages}    label="Messages"    badge={5}   badgeColor="red" />
+      <NavItem       icon={icons.feedback}    label="Feedback" />
 
       <SectionLabel text="SYSTEM" />
-      <NavItem to="/settings"      icon={icons.settings}    label="Settings" />
+      <NavItem       icon={icons.settings}    label="Settings" />
     </nav>
 
     {/* Owner profile */}
