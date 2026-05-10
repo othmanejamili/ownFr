@@ -9,8 +9,7 @@ import ForgotPassword from '../pages/auth/ForgotPassword';
 import Pricing from '../pages/Home/Pricing';
 import SchoolsPage from '../pages/Home/SchoolsPage';
 import OwnerDashboard from '../pages/Dashboard/Owner/OwnerDashboard';
-import Docs from '../pages/Home/Docs';
-import Blog from '../pages/Home/Bogs';
+
 function App() {
   return (
     <Router>
@@ -20,8 +19,6 @@ function App() {
         <Route path="/"         element={<HomePage />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path='/schools'  element={<SchoolsPage />} />
-        <Route path='/blog'     element={<Blog />} />
-        <Route path='/docs'     element={<Docs />}/>
         <Route path="/login"    element={<Login />} />
         <Route path="/logout"   element={<LogoutButton />} />
         <Route path="/register" element={<Register />} />
