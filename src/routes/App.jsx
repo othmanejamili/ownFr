@@ -10,7 +10,6 @@ import ProtectedRoute     from '../components/ProtectedRoute';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import Pricing from '../pages/Home/Pricing';
 import SchoolsPage from '../pages/Home/SchoolsPage';
-import OwnerDashboard from '../pages/Dashboard/Owner/OwnerDashboard';
 import Blog from '../pages/Home/Blogs';
 import Docs from '../pages/Home/Docs';
 function App() {
