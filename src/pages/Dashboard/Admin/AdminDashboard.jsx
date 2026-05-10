@@ -8,7 +8,7 @@ import {
   BarElement, ArcElement, Filler, Tooltip, Legend,
 } from 'chart.js';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
-import useDashboard from '../Dashboard/Usedashboard';
+import useDashboard from './Usedashboard';
 
 ChartJS.register(
   CategoryScale, LinearScale, PointElement, LineElement,

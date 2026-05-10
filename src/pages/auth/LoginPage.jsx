@@ -198,7 +198,7 @@ const Login = () => {
       }
 
       const { role } = result.userData;
-      const routes = { A: '/dashboard/admin', I: '/dashboard/instructor', S: '/dashboard/student' };
+      const routes = { A: '/dashboard/admin', A: '/dashboard/owner' , I: '/dashboard/instructor', S: '/dashboard/student' };
 
       setSuccess(true);
       setTimeout(() => {
