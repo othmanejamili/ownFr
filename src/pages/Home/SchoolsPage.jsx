@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import NavBar from '../Home/NavBar';
+import Footer from './Footer';
 /*
  * DriveIQ — Schools.jsx  (/schools)
  * Stack  : React 18 + Tailwind CSS v3 + React Router v6
@@ -577,24 +578,7 @@ const CtaStrip = () => (
 );
 
 // ─── Footer ───────────────────────────────────────────────────
-const Footer = () => (
-  <footer className="px-5 sm:px-11 py-6 border-t border-white/[0.06]
-    flex items-center justify-between flex-wrap gap-4">
-    <div className="flex items-center gap-2">
-      <LogoMark size={24} />
-      <span className="font-sora text-[13px] font-bold text-white/35">DriveIQ © 2026</span>
-    </div>
-    <div className="flex gap-5">
-      {['Privacy', 'Terms', 'Contact', 'Status'].map((l) => (
-        <a key={l} href="#"
-          className="text-[12px] text-white/20 hover:text-white/50 transition-colors font-dm">
-          {l}
-        </a>
-      ))}
-    </div>
-    <span className="text-[11px] text-white/15 font-dm">Made with care in Morocco 🇲🇦</span>
-  </footer>
-);
+<Footer />
 
 // ─────────────────────────────────────────────────────────────
 // ROOT PAGE COMPONENT

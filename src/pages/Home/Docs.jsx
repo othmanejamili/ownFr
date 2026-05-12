@@ -4,7 +4,7 @@
 
 import { useState } from 'react';
 import NavBar from './NavBar';
-
+import Footer from './Footer';
 // ── Shared primitives ────────────────────────────────────────
 const LogoMark = ({ size = 32 }) => (
   <div className="bg-blue-600 flex items-center justify-center flex-shrink-0"
@@ -396,22 +396,7 @@ const TableOfContents = () => (
 );
 
 // ── Footer ───────────────────────────────────────────────────
-const Footer = () => (
-  <footer className="px-6 md:px-11 py-6 border-t border-white/[0.06] flex items-center
-    justify-between flex-wrap gap-4">
-    <div className="flex items-center gap-2">
-      <LogoMark size={24} />
-      <span className="font-sora text-[13px] font-bold text-white/35">DriveIQ © 2026</span>
-    </div>
-    <div className="flex gap-5">
-      {['Privacy','Terms','Contact','Status'].map(l => (
-        <a key={l} href="#"
-          className="text-[12px] text-white/20 hover:text-white/50 transition-colors font-dm">{l}</a>
-      ))}
-    </div>
-    <span className="text-[11px] text-white/15 font-dm">Made with care in Morocco 🇲🇦</span>
-  </footer>
-);
+<Footer />
 
 // ── Root ─────────────────────────────────────────────────────
 const Docs = () => {
@@ -456,9 +441,9 @@ const Docs = () => {
             <DocsContent activeSlug={activeSlug} />
             <TableOfContents />
           </div>
-          <Footer />
         </main>
       </div>
+      <Footer />
     </div>
   );
 };

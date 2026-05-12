@@ -11,6 +11,7 @@ import Pricing from '../pages/Home/Pricing';
 import SchoolsPage from '../pages/Home/SchoolsPage';
 import Blog from '../pages/Home/Blogs';
 import Docs from '../pages/Home/Docs';
+import  MembersPage from  '../pages/Dashboard/Owner/Memberspage';
 function App() {
   return (
     <Router>
@@ -26,6 +27,7 @@ function App() {
         <Route path="/logout"   element={<LogoutButton />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        
         {/* Protected routes */}
         <Route
           path="/dashboard/admin"
@@ -43,8 +45,16 @@ function App() {
             <OwnerDashboard />
           </ProtectedRoute>
         }
-        ></Route>
+        />
 
+        <Route
+        path='/dashboard/owner/membres'
+        element={
+          <ProtectedRoute requiredRole="A" requireStaff={false}>
+            <MembersPage />
+          </ProtectedRoute>
+        }
+        />
         <Route
           path="/unauthorized"
           element={
