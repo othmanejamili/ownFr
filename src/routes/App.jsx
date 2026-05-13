@@ -11,7 +11,9 @@ import Pricing from '../pages/Home/Pricing';
 import SchoolsPage from '../pages/Home/SchoolsPage';
 import Blog from '../pages/Home/Blogs';
 import Docs from '../pages/Home/Docs';
-import  MembersPage from  '../pages/Dashboard/Owner/Memberspage';
+import  MembersPage from  '../pages/Dashboard/Owner/AddMembres/Memberspage';
+import Studentspage from '../pages/Dashboard/Owner/AddMembres/Studentpage';
+import Instructorpage from '../pages/Dashboard/Owner/AddMembres/Instructorspage';
 function App() {
   return (
     <Router>
@@ -55,6 +57,23 @@ function App() {
           </ProtectedRoute>
         }
         />
+        <Route
+        path='/dashboard/owner/students'
+        element={
+          <ProtectedRoute requiredRole="A" requireStaff={false}>
+            <Studentspage />
+          </ProtectedRoute>
+        }
+        />
+        <Route
+        path='/dashboard/owner/instructors'
+        element={
+          <ProtectedRoute requiredRole="A" requireStaff={false}>
+            <Instructorpage />
+          </ProtectedRoute>
+        }
+        />
+
         <Route
           path="/unauthorized"
           element={
