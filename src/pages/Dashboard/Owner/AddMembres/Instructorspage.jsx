@@ -12,9 +12,9 @@
 //   GET  /api/drivingschool/            → to get schoolId
 
 import { useState, useEffect, useCallback } from 'react';
-import Sidebar from './Sidebar';
-import AddMemberModal from './Addmembermodal';
-import { membersApi } from './Membersapi';
+import Sidebar from '../Sidebar';
+import AddMemberModal from '../AddMembres/Addmembermodal';
+import { membersApi } from '../AddMembres/Membersapi';
 
 /* ── primitives ──────────────────────────────────────────────── */
 const cls = (...a) => a.filter(Boolean).join(' ');
@@ -128,90 +128,43 @@ const SearchBar = ({ value, onChange, placeholder }) => (
   </div>
 );
 
-/* ── Student row ─────────────────────────────────────────────── */
-const StudentRow = ({ profile, onDelete }) => {
-  const user = profile.user_username;
-  const fullName = [profile.user?.first_name, profile.user?.last_name].filter(Boolean).join(' ')
-    || profile.user_username;
-  const theory  = parseFloat(profile.progress_theory  || 0);
-  const driving = parseFloat(profile.progress_driving || 0);
-  const overall = (theory + driving) / 2;
-
-  return (
-    <tr className="border-b border-white/[0.03] hover:bg-white/[0.02]
-      transition-colors group cursor-default">
-      <td className="px-4 py-3">
-        <div className={cls(
-          'w-8 h-8 rounded-[9px] flex items-center justify-center',
-          'text-[10px] font-bold text-white flex-shrink-0',
-          getAvatarColor(profile.user_username),
-        )}>
-          {initials(profile.user?.first_name, profile.user?.last_name) || user?.[0]?.toUpperCase()}
-        </div>
-      </td>
-      <td className="px-4 py-3">
-        <div className="text-[12px] font-semibold text-white">{fullName}</div>
-        <div className="text-[10px] text-white/35 mt-0.5">@{profile.user_username}</div>
-      </td>
-      <td className="px-4 py-3 text-[11px] text-white/45">{profile.user_email || '—'}</td>
-      <td className="px-4 py-3"><LicenseBadge type={profile.license_type} /></td>
-      <td className="px-4 py-3">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-1.5">
-            <span className="text-[9px] text-white/25 w-9">Theory</span>
-            <ProgressBar value={theory} color={theory >= 80 ? 'bg-emerald-500' : 'bg-blue-500'} />
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-[9px] text-white/25 w-9">Drive</span>
-            <ProgressBar value={driving} color={driving >= 80 ? 'bg-emerald-500' : 'bg-violet-500'} />
-          </div>
-        </div>
-      </td>
-      <td className="px-4 py-3"><StatusBadge status={profile.status} /></td>
-      <td className="px-4 py-3">
-        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button
-            onClick={() => onDelete(profile.id)}
-            className="w-6 h-6 rounded-lg bg-red-500/10 hover:bg-red-500/20
-              text-red-400 flex items-center justify-center transition-colors text-[11px]"
-            title="Remove"
-          >
-            ×
-          </button>
-        </div>
-      </td>
-    </tr>
-  );
-};
 
 /* ── Instructor row ──────────────────────────────────────────── */
 const InstructorRow = ({ profile, onDelete }) => {
-  const fullName = [profile.user?.first_name, profile.user?.last_name].filter(Boolean).join(' ')
+  const fullName = 
+    [profile.user_first_name, profile.user_last_name].filter(Boolean).join(' ')
     || profile.user_username;
 
   return (
-    <tr className="border-b border-white/[0.03] hover:bg-white/[0.02]
-      transition-colors group cursor-default">
-      <td className="px-4 py-3">
+    <tr className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors group cursor-default">
+    <td className="px-4 py-3">
+      {profile.picture_profile_url ? (
+        <img
+          src={profile.picture_profile_url}
+          alt={profile.user_username}
+          className="w-8 h-8 rounded-[9px] object-cover"
+        />
+      ) : (
         <div className={cls(
           'w-8 h-8 rounded-[9px] flex items-center justify-center',
           'text-[10px] font-bold text-white flex-shrink-0',
           getAvatarColor(profile.user_username),
         )}>
-          {initials(profile.user?.first_name, profile.user?.last_name) || profile.user_username?.[0]?.toUpperCase()}
+          {initials(profile.user_first_name, profile.user_last_name)
+            || profile.user_username?.[0]?.toUpperCase()}
         </div>
-      </td>
+      )}
+    </td>
       <td className="px-4 py-3">
         <div className="text-[12px] font-semibold text-white">{fullName}</div>
         <div className="text-[10px] text-white/35 mt-0.5">@{profile.user_username}</div>
       </td>
       <td className="px-4 py-3 text-[11px] text-white/45">{profile.user_email || '—'}</td>
-      <td className="px-4 py-3">
-        <StatusBadge status={profile.status} />
-      </td>
+      <td className="px-4 py-3"><StatusBadge status={profile.status} /></td>
       <td className="px-4 py-3 text-[11px] text-white/40">
         {profile.joined_at
-          ? new Date(profile.joined_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })
+          ? new Date(profile.joined_at).toLocaleDateString('en-GB', 
+              { day: '2-digit', month: 'short', year: 'numeric' })
           : '—'}
       </td>
       <td className="px-4 py-3" />
@@ -221,10 +174,7 @@ const InstructorRow = ({ profile, onDelete }) => {
             onClick={() => onDelete(profile.id)}
             className="w-6 h-6 rounded-lg bg-red-500/10 hover:bg-red-500/20
               text-red-400 flex items-center justify-center transition-colors text-[11px]"
-            title="Remove"
-          >
-            ×
-          </button>
+          >×</button>
         </div>
       </td>
     </tr>
@@ -265,8 +215,8 @@ const ConfirmDialog = ({ open, onConfirm, onCancel, loading }) => {
 /* ─────────────────────────────────────────────────────────────
    MAIN PAGE
 ───────────────────────────────────────────────────────────── */
-const MembersPage = () => {
-  const [tab,        setTab]        = useState('students');  // 'students' | 'instructors'
+const Instructorpage = () => {
+  const [tab,        setTab]        = useState('instructors');  // 'students' | 'instructors'
   const [profiles,   setProfiles]   = useState([]);
   const [schoolId,   setSchoolId]   = useState(null);
   const [loading,    setLoading]    = useState(true);
@@ -296,11 +246,9 @@ const MembersPage = () => {
       const data = await membersApi.getStudentProfiles(search);
       const all = Array.isArray(data) ? data : [];
   
-      if (tab === 'students') {
-        // Keep only student profiles (have license_type or progress fields)
-        setProfiles(all.filter(p => p.user_role === 'S'));
+      if (tab === 'instructors') {
+        setProfiles(all.filter(p => p.user_role === 'I'));
       } else {
-        // Keep only instructor profiles
         setProfiles(all.filter(p => p.user_role === 'I'));
       }
     } catch {
@@ -329,11 +277,9 @@ const MembersPage = () => {
 
   const openAdd = (mode) => { setModalMode(mode); setModalOpen(true); };
 
-  const studentCount    = tab === 'students' ? profiles.length : '—';
   const instructorCount = tab === 'instructors' ? profiles.length : '—';
 
   /* ── table headers ── */
-  const studentHeaders    = ['', 'Name', 'Email', 'License', 'Progress', 'Status', ''];
   const instructorHeaders = ['', 'Name', 'Email', 'Status', 'Joined', '', ''];
 
   return (
@@ -347,7 +293,7 @@ const MembersPage = () => {
           flex items-center gap-3 px-5">
           <div className="flex items-baseline gap-2">
             <span className="font-sora text-[14px] font-bold text-white">Members</span>
-            <span className="text-[11px] text-white/30">Your school's students & instructors</span>
+            <span className="text-[11px] text-white/30">Your school's instructors</span>
           </div>
           <div className="flex-1" />
           <button
@@ -360,16 +306,6 @@ const MembersPage = () => {
               <path d="M5 1v8M1 5h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
             </svg>
             Add instructor 
-          </button>
-          <button
-            onClick={() => openAdd('student')}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-600
-              hover:bg-blue-500 rounded-[7px] text-[11px] font-semibold text-white
-              transition-all font-dm">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-              <path d="M5 1v8M1 5h8" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
-            Add student
           </button>
         </header>
 
@@ -392,7 +328,6 @@ const MembersPage = () => {
           {/* ── Stats strip ── */}
           <div className="grid grid-cols-3 gap-3">
             {[
-              { icon: '👨‍🎓', label: 'Total students',    value: tab === 'students' ? profiles.length : '—', accent: 'blue'   },
               { icon: '👨‍🏫', label: 'Total instructors', value: tab === 'instructors' ? profiles.length : '—', accent: 'violet' },
               { icon: '✅', label: 'Active members',    value: profiles.filter(p => p.status === 'A').length, accent: 'emerald' },
             ].map(card => (
@@ -416,7 +351,6 @@ const MembersPage = () => {
               {/* Tabs */}
               <div className="flex bg-white/[0.04] rounded-[8px] p-0.5 gap-0.5">
                 {[
-                  { key: 'students',    label: '👨‍🎓 Students'    },
                   { key: 'instructors', label: '👨‍🏫 Instructors' },
                 ].map(t => (
                   <button
@@ -471,17 +405,30 @@ const MembersPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {loading
-                    ? Array(5).fill(0).map((_, i) => <SkeletonRow key={i} />)
-                    : profiles.length === 0
-                    ? <EmptyState tab={tab} onAdd={() => openAdd(tab === 'students' ? 'student' : 'instructor')} />
-                    : profiles.map(profile =>
-                        tab === 'students'
-                          ? <StudentRow    key={profile.id} profile={profile} onDelete={setDeleteId} />
-                          : <InstructorRow key={profile.id} profile={profile} onDelete={setDeleteId} />
-                      )
-                  }
-                </tbody>
+                {loading
+                  ? Array(5)
+                      .fill(0)
+                      .map((_, i) => <SkeletonRow key={i} />)
+
+                  : profiles.length === 0
+                  ? (
+                    <EmptyState
+                      tab={tab}
+                      onAdd={() =>
+                        openAdd(tab === 'students' ? 'student' : 'instructor')
+                      }
+                    />
+                  )
+
+                  : profiles.map(profile => (
+                      <InstructorRow
+                        key={profile.id}
+                        profile={profile}
+                        onDelete={setDeleteId}
+                      />
+                    ))
+                }
+              </tbody>
               </table>
             </div>
 
@@ -526,4 +473,4 @@ const MembersPage = () => {
   );
 };
 
-export default MembersPage;
+export default Instructorpage;

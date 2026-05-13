@@ -12,7 +12,7 @@
 //   mode        'student' | 'instructor'
 
 import { useState, useEffect } from 'react';
-import { membersApi } from './Membersapi';
+import { membersApi } from '../AddMembres/Membersapi';
 
 /* ── tiny helpers ──────────────────────────────────────────── */
 const cls = (...a) => a.filter(Boolean).join(' ');
@@ -130,7 +130,19 @@ const AddMemberModal = ({ open, onClose, onSuccess, schoolId, mode = 'student' }
     license_type: 'C',
     theory_start_date: '',
     driving_start_date: '',
+    picture_profile: null,  
   });
+
+  // preview state
+  const [picturePreview, setPicturePreview] = useState(null);
+
+  // Handle file change
+  const handlePictureChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setProfile(p => ({ ...p, picture_profile: file }));
+    setPicturePreview(URL.createObjectURL(file));
+  };
 
   // reset on open
   useEffect(() => {
@@ -139,8 +151,9 @@ const AddMemberModal = ({ open, onClose, onSuccess, schoolId, mode = 'student' }
       setGlobalError('');
       setFieldErrors({});
       setCreatedUser(null);
+      setPicturePreview(null);
       setAccount({ first_name: '', last_name: '', username: '', email: '', password: '', phone_number: '' });
-      setProfile({ license_type: 'C', theory_start_date: '', driving_start_date: '' });
+      setProfile({ license_type: 'C', theory_start_date: '', driving_start_date: '',picture_profile: null  });
     }
   }, [open]);
 
@@ -201,25 +214,21 @@ const AddMemberModal = ({ open, onClose, onSuccess, schoolId, mode = 'student' }
     setIsLoading(true);
     setGlobalError('');
     try {
-      // Find the profile the backend auto-created in Step 1
       const profiles = await membersApi.getStudentProfiles();
       const existing = profiles.find(p => p.user === createdUser.id);
   
-      if (!existing) {
-        setGlobalError('Profile not found. Please contact support.');
-        return;
+      if (existing) {
+        // Build FormData instead of plain object (required for file upload)
+        const formData = new FormData();
+        if (profile.license_type)       formData.append('license_type',       profile.license_type);
+        if (profile.theory_start_date)  formData.append('theory_start_date',  profile.theory_start_date);
+        if (profile.driving_start_date) formData.append('driving_start_date', profile.driving_start_date);
+        if (profile.picture_profile)    formData.append('picture_profile',    profile.picture_profile);
+  
+        const updated = await membersApi.updateProfileForm(existing.id, formData); // ← new method
+        setStep(3);
+        onSuccess?.(updated);
       }
-  
-      // PATCH only the optional fields
-      const updates = {
-        ...(profile.license_type       && { license_type:       profile.license_type }),
-        ...(profile.theory_start_date  && { theory_start_date:  profile.theory_start_date }),
-        ...(profile.driving_start_date && { driving_start_date: profile.driving_start_date }),
-      };
-  
-      const updated = await membersApi.updateProfile(existing.id, updates);
-      setStep(3);
-      onSuccess?.(updated);
     } catch (err) {
       const errData = err.response?.data;
       if (errData && typeof errData === 'object' && !errData.error) {
@@ -419,7 +428,59 @@ const AddMemberModal = ({ open, onClose, onSuccess, schoolId, mode = 'student' }
                 className="text-white/60"
               />
             </Field>
+            {/* Picture upload — add this above the license_type field */}
+            <Field label="Profile picture (optional)">
+              <div className="flex items-center gap-3">
+                
+                {/* Preview circle */}
+                <div className="w-12 h-12 rounded-full flex-shrink-0 overflow-hidden
+                  bg-white/[0.05] border border-white/[0.08] flex items-center justify-center">
+                  {picturePreview ? (
+                    <img src={picturePreview} alt="preview"
+                      className="w-full h-full object-cover" />
+                  ) : (
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                      <circle cx="9" cy="7" r="3" stroke="rgba(255,255,255,0.2)" strokeWidth="1.3"/>
+                      <path d="M3 16c0-3 2.7-5 6-5s6 2 6 5"
+                        stroke="rgba(255,255,255,0.2)" strokeWidth="1.3" strokeLinecap="round"/>
+                    </svg>
+                  )}
+                </div>
 
+                {/* Upload button */}
+                <label className="flex-1 flex items-center justify-center gap-2
+                  bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.08]
+                  border-dashed rounded-xl px-4 py-2.5 cursor-pointer transition-all group">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M6 1v7M3 4l3-3 3 3" stroke="rgba(255,255,255,0.4)"
+                      strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M1 10h10" stroke="rgba(255,255,255,0.2)"
+                      strokeWidth="1.3" strokeLinecap="round"/>
+                  </svg>
+                  <span className="text-[11px] text-white/30 group-hover:text-white/50 transition-colors">
+                    {profile.picture_profile ? profile.picture_profile.name : 'Choose photo'}
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handlePictureChange}
+                  />
+                </label>
+
+                {/* Clear button */}
+                {picturePreview && (
+                  <button
+                    onClick={() => {
+                      setProfile(p => ({ ...p, picture_profile: null }));
+                      setPicturePreview(null);
+                    }}
+                    className="w-7 h-7 rounded-lg bg-red-500/10 hover:bg-red-500/20
+                      text-red-400 flex items-center justify-center transition-colors text-[13px]"
+                  >×</button>
+                )}
+              </div>
+            </Field>
             <div className="flex gap-2.5 mt-1">
               <button onClick={() => setStep(1)}
                 className="flex-none px-4 py-2.5 rounded-xl border border-white/[0.08]
