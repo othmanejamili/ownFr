@@ -14,6 +14,11 @@ import Docs from '../pages/Home/Docs';
 import  MembersPage from  '../pages/Dashboard/Owner/AddMembres/Memberspage';
 import Studentspage from '../pages/Dashboard/Owner/AddMembres/Studentpage';
 import Instructorpage from '../pages/Dashboard/Owner/AddMembres/Instructorspage';
+import LessonsPage from '../pages/Dashboard/Owner/LessonCrud/Lessonspage';
+import AttendancePage from '../pages/Dashboard/Owner/Attendance/Attendancepage';
+import VehiclePage from '../pages/Dashboard/Owner/Vehicle/Vehiclepage';
+import SchedulePage from '../pages/Dashboard/Owner/Schedule/SchedulePage';
+import Analyticspage from '../pages/Dashboard/Owner/Analytics/Analyticspage';
 function App() {
   return (
     <Router>
@@ -73,6 +78,53 @@ function App() {
           </ProtectedRoute>
         }
         />
+
+        <Route
+        path='/dashboard/owner/lessons'
+        element={
+          <ProtectedRoute requiredRole="A" requireStaff={false}>
+            <LessonsPage />
+          </ProtectedRoute>
+        }
+        />
+
+
+
+      <Route
+        path='/dashboard/owner/attendance'
+        element={
+          <ProtectedRoute requiredRole="A" requireStaff={false}>
+            <AttendancePage />
+          </ProtectedRoute>
+        }
+        />
+
+      <Route
+        path='/dashboard/owner/vehicle'
+        element={
+          <ProtectedRoute requiredRole="A" requireStaff={false}>
+            <VehiclePage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/dashboard/owner/schedule'
+        element={
+          <ProtectedRoute requiredRole="A" requireStaff={false}>
+            <SchedulePage />
+          </ProtectedRoute>
+        }
+        />
+        <Route
+        path='/dashboard/owner/analytics'
+        element={
+          <ProtectedRoute requiredRole="A" requireStaff={false}>
+            <Analyticspage />
+          </ProtectedRoute>
+        }
+        />
+
 
         <Route
           path="/unauthorized"
