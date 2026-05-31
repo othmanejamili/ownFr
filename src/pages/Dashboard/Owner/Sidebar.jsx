@@ -112,15 +112,16 @@ const Sidebar = () => (
 
       <SectionLabel text="FINANCE" />
       <NavItem       icon={icons.payments}    label="Payments"     badgeColor="amber" />
-      <NavItem       icon={icons.invoices}    label="Invoices" />
-      <NavItem to={'/dashboard/owner/analytics'}        icon={icons.reports}     label="Reports"  badgeColor='blue'/>
+      <NavItem to={'/dashboard/owner/analytics'}        icon={icons.reports}     label="Analytics"  badgeColor='blue'/>
+      <NavItem to={'/dashboard/owner/raposrts'}        icon={icons.invoices}     label="Reports"  badgeColor='blue'/>
 
       <SectionLabel text="ENGAGE" />
-      <NavItem       icon={icons.messages}    label="Messages"       badgeColor="red" />
-      <NavItem       icon={icons.feedback}    label="Feedback" />
+      <NavItem to={'/dashboard/owner/template'}       icon={icons.messages}    label="Template"       badgeColor="blue" />
+      <NavItem to={'/dashboard/owner/automated-message'}       icon={icons.messages}    label="Messages"       badgeColor="red" />
+      <NavItem to={'/dashboard/owner/feedback'}       icon={icons.feedback}    label="Feedback" badgeColor='blue'/>
 
       <SectionLabel text="SYSTEM" />
-      <NavItem  to={'/dashboard/owner/setting'}      icon={icons.settings}    label="Settings" />
+      <NavItem  to={'/dashboard/owner/settings'}      icon={icons.settings}    label="Settings" />
     </nav>
 
     {/* Owner profile */}

@@ -270,8 +270,8 @@ const PredictionTab = ({ profileId }) => {
   const risks       = prediction.risk_factors   || {};
   const recs        = prediction.recommendations || [];
   const riskSummary = prediction.risk_summary   || {};
-  const successPct  = Math.round((pred.success_probability || 0) * 100);
-  const confPct     = Math.round((pred.confidence_level    || 0) * 100);
+  const successPct = Math.round(pred.success_probability || 0);
+  const confPct    = Math.round((pred.confidence_level || 0) * 100); 
 
   const successColor =
     successPct >= 70 ? '#10b981' :

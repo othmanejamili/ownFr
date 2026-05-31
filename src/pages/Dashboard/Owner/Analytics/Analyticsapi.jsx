@@ -1,64 +1,71 @@
-// ─────────────────────────────────────────────
-//  analyticsApi.js  —  /api/schoolanalytics/*
-// ─────────────────────────────────────────────
+// src/pages/ScheduleCrud/AnalyticsApi.js
 import axios from "axios";
 
-const API = import.meta.env.VITE_API_URL;
+const API = "http://127.0.0.1:8000/";
+
+const client = axios.create({ baseURL: API });
+
+client.interceptors.request.use((cfg) => {
+  const access =
+    localStorage.getItem("access") || sessionStorage.getItem("access");
+  if (access) cfg.headers.Authorization = `Bearer ${access}`;
+  return cfg;
+});
+
+const d = (r) => r.data;
 
 // ── CRUD ──────────────────────────────────────────────────────
-export const fetchAnalyticsList = (params = {}) =>
-  axios.get(`${API}/schoolanalytics/`, { params }).then(r => r.data);
-
-export const fetchAnalyticsRecord = (id) =>
-  axios.get(`${API}/schoolanalytics/${id}/`).then(r => r.data);
+export const fetchAnalyticsList    = (params = {}) => client.get("/schoolanalytics/", { params }).then(d);
+export const fetchAnalyticsRecord  = (id)           => client.get(`/schoolanalytics/${id}/`).then(d);
+export const deleteAnalyticsRecord = (id)           => client.delete(`/schoolanalytics/${id}/`).then(d);
 
 // ── Dashboard ─────────────────────────────────────────────────
-export const fetchDashboard = (schoolId, dateRange = 'month') =>
-  axios.get(`${API}/schoolanalytics/dashboard/`, {
-    params: { school_id: schoolId, date_range: dateRange },
-  }).then(r => r.data);
+export const fetchDashboard = (schoolId, dateRange = "month") =>
+  client.get("/schoolanalytics/dashboard/", { params: { school_id: schoolId, date_range: dateRange } }).then(d);
 
 // ── Trends ────────────────────────────────────────────────────
-export const fetchTrends = (schoolId, metric = 'students', days = 30) =>
-  axios.get(`${API}/schoolanalytics/trends/`, {
-    params: { school_id: schoolId, metric, days },
-  }).then(r => r.data);
+export const fetchTrends = (schoolId, metric = "students", days = 30) =>
+  client.get("/schoolanalytics/trends/", { params: { school_id: schoolId, metric, days } }).then(d);
 
 // ── Alerts ────────────────────────────────────────────────────
 export const fetchAlerts = (schoolId, days = 7) =>
-  axios.get(`${API}/schoolanalytics/alerts/`, {
-    params: { school_id: schoolId, days },
-  }).then(r => r.data);
+  client.get("/schoolanalytics/alerts/", { params: { school_id: schoolId, days } }).then(d);
 
 // ── Predictions ───────────────────────────────────────────────
-export const fetchPredictions = (schoolId, horizon = 'month') =>
-  axios.get(`${API}/schoolanalytics/predictions/`, {
-    params: { school_id: schoolId, horizon },
-  }).then(r => r.data);
+export const fetchPredictions = (schoolId, horizon = "month") =>
+  client.get("/schoolanalytics/predictions/", { params: { school_id: schoolId, horizon } }).then(d);
 
 // ── Summary ───────────────────────────────────────────────────
-export const fetchSummary = () =>
-  axios.get(`${API}/schoolanalytics/summary/`).then(r => r.data);
+export const fetchSummary = () => client.get("/schoolanalytics/summary/").then(d);
 
 // ── Generate daily ────────────────────────────────────────────
-export const generateDaily = (schoolId, date = null) =>
-  axios.post(`${API}/schoolanalytics/generate_daily/`, {
-    school_id: schoolId,
-    ...(date ? { date } : {}),
-  }).then(r => r.data);
+export const generateDaily = (schoolId, date = null) => {
+  const payload = { school_id: schoolId };
+  if (date) payload.date = date;
+  return client.post("/schoolanalytics/generate_daily/", payload).then(d);
+};
 
-// ── Export ────────────────────────────────────────────────────
-export const exportAnalytics = (schoolId, startDate, endDate, format = 'json') =>
-  axios.get(`${API}/schoolanalytics/export/`, {
+// ── Refresh a specific record ─────────────────────────────────
+export const refreshAnalytics = (id) => client.post(`/schoolanalytics/${id}/refresh/`).then(d);
+
+// ── Bulk generate ─────────────────────────────────────────────
+export const bulkGenerate = (payload) => client.post("/schoolanalytics/bulk_generate/", payload).then(d);
+
+// ── Export (CSV or JSON) ──────────────────────────────────────
+export const exportAnalytics = (schoolId, startDate, endDate, format = "json") =>
+  client.get("/schoolanalytics/export/", {
     params: { school_id: schoolId, start_date: startDate, end_date: endDate, format },
-  }).then(r => r.data);
+    ...(format === "csv" ? { responseType: "blob" } : {}),
+  }).then(d);
 
 // ── Comparison ────────────────────────────────────────────────
 export const fetchComparison = (schoolIds, startDate, endDate) =>
-  axios.get(`${API}/schoolanalytics/comparison/`, {
-    params: { school_ids: schoolIds.join(','), start_date: startDate, end_date: endDate },
-  }).then(r => r.data);
+  client.get("/schoolanalytics/comparison/", {
+    params: { school_ids: schoolIds.join(","), start_date: startDate, end_date: endDate },
+  }).then(d);
 
-// ── System health (admin only) ────────────────────────────────
-export const fetchSystemHealth = () =>
-  axios.get(`${API}/schoolanalytics/system_health/`).then(r => r.data);
+// ── System health ─────────────────────────────────────────────
+export const fetchSystemHealth = () => client.get("/schoolanalytics/system_health/").then(d);
+
+// ── School list ───────────────────────────────────────────────
+export const fetchSchools = () => client.get("/drivingschool/").then(d);

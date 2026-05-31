@@ -51,6 +51,9 @@ export const membersApi = {
   updateStudentProgress: (profileId, payload) =>
     axios.post(`${API}/studentprofile/${profileId}/update_progress/`, payload).then(r => r.data),
 
+  // GET /api/studentprofile/{id}/performance_prediction/
+  getPerformancePrediction: (profileId) =>
+    axios.get(`${API}/studentprofile/${profileId}/performance_prediction/`).then(r => r.data),
   // ── Instructors ─────────────────────────────────────────────
   getInstructors: (schoolId) =>
     axios.get(`${API}/users/school_users/`, {
