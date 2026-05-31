@@ -19,6 +19,11 @@ import AttendancePage from '../pages/Dashboard/Owner/Attendance/Attendancepage';
 import VehiclePage from '../pages/Dashboard/Owner/Vehicle/Vehiclepage';
 import SchedulePage from '../pages/Dashboard/Owner/Schedule/SchedulePage';
 import Analyticspage from '../pages/Dashboard/Owner/Analytics/Analyticspage';
+import Automatedmessagepage from '../pages/Dashboard/Owner/Message/Automatedmessagepage';
+import CommunicationTemplatepage from '../pages/Dashboard/Owner/Template/Communicationtemplatepage';
+import ReportsPage from '../pages/Dashboard/Owner/Raports/Reportspage';
+import SettingsPage from '../pages/Dashboard/Owner/Settingspage';
+import FeedbackPage from '../pages/Dashboard/Owner/Feedback/Feedbackpage';
 function App() {
   return (
     <Router>
@@ -124,6 +129,53 @@ function App() {
           </ProtectedRoute>
         }
         />
+
+      <Route
+        path='/dashboard/owner/template'
+        element={
+          <ProtectedRoute requiredRole="A" requireStaff={false}>
+            <CommunicationTemplatepage />
+          </ProtectedRoute>
+        }
+        />
+
+      <Route
+        path='/dashboard/owner/automated-message'
+        element={
+          <ProtectedRoute requiredRole="A" requireStaff={false}>
+            <Automatedmessagepage />
+          </ProtectedRoute>
+        }
+        />
+
+      <Route
+        path='/dashboard/owner/raposrts'
+        element={
+          <ProtectedRoute requiredRole="A" requireStaff={false}>
+            <ReportsPage />
+          </ProtectedRoute>
+        }
+        />
+
+      <Route
+        path='/dashboard/owner/feedback'
+        element={
+          <ProtectedRoute requiredRole="A" requireStaff={false}>
+            <FeedbackPage />
+          </ProtectedRoute>
+        }
+        />
+
+      <Route
+        path='/dashboard/owner/settings'
+        element={
+          <ProtectedRoute requiredRole="A" requireStaff={false}>
+            <SettingsPage />
+          </ProtectedRoute>
+        }
+        />
+
+
 
 
         <Route
