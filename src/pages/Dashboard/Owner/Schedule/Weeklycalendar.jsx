@@ -2,8 +2,8 @@
 //  WeeklyCalendar — 5-day grid with hour slots
 // ─────────────────────────────────────────────
 import React, { useRef, useEffect } from 'react';
-import { addDays, sameDay, fmtTime, DAYS } from '../Schedule/scheduleUtils';
-import ScheduleEventCard from '../Schedule/ScheduleEventCard';
+import { addDays, sameDay, fmtTime, DAYS } from './Scheduleutils';
+import ScheduleEventCard from './Scheduleeventcard';
 
 const HOURS = Array.from({ length: 11 }, (_, i) => i + 8); // 08–18
 
