@@ -5,24 +5,24 @@
 import React, { useState, useCallback } from 'react';
 import Sidebar from '../Sidebar'; // adjust path to your actual Sidebar
 
-import WeeklyCalendar      from '../Schedule/WeeklyCalendar';
-import DayView             from '../Schedule/DayView';
-import MonthView           from '../Schedule/MonthView';
-import ScheduleFormModal   from '../Schedule/ScheduleFormModal';
-import ScheduleDetailDrawer from '../Schedule/ScheduleDetailDrawer';
+import WeeklyCalendar      from './Weeklycalendar';
+import DayView             from './Dayview';
+import MonthView           from './MonthView';
+import ScheduleFormModal   from './ScheduleFormModal';
+import ScheduleDetailDrawer from './ScheduleDetailDrawer';
 
 import {
   useSchedules,
   useMySchedule,
   useScheduleMutations,
-} from '../Schedule/useSchedule';
+} from './Useschedule';
 
 import {
   startOfWeek,
   addDays,
   toISO,
   MONTHS,
-} from '../Schedule/scheduleUtils';
+} from './Scheduleutils';
 
 // ── tiny icon components ─────────────────────────────────────────
 

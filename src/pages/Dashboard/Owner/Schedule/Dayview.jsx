@@ -2,8 +2,8 @@
 //  DayView — single-day detailed timeline
 // ─────────────────────────────────────────────
 import React, { useRef, useEffect } from 'react';
-import { fmtDate, sameDay } from '../Schedule/scheduleUtils';
-import ScheduleEventCard from '../Schedule/ScheduleEventCard';
+import { fmtDate, sameDay } from './Scheduleutils';
+import ScheduleEventCard from './Scheduleeventcard';
 
 const HOURS = Array.from({ length: 11 }, (_, i) => i + 8);
 

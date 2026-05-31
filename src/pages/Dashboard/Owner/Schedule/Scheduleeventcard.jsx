@@ -3,7 +3,7 @@
 //  rendered inside the weekly / day grid
 // ─────────────────────────────────────────────
 import React from 'react';
-import { fmtTime, fmtDuration, lessonStyle, timeToTopPx, durationToPx } from '../Schedule/scheduleUtils';
+import { fmtTime, fmtDuration, lessonStyle, timeToTopPx, durationToPx } from './Scheduleutils';
 
 const ScheduleEventCard = ({ schedule, onClick, style = {} }) => {
   const lesson  = schedule.lesson_title   || 'Untitled lesson';

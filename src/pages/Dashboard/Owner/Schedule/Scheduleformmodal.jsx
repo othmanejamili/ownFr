@@ -2,9 +2,9 @@
 //  ScheduleFormModal — create & edit drawer
 // ─────────────────────────────────────────────
 import React, { useState, useEffect } from 'react';
-import { useScheduleResources } from '../Schedule/UseSchedule';
-import { useInstructorAvailability, useVehicleAvailability } from '../Schedule/UseSchedule';
-import { toISO } from '../Schedule/scheduleUtils';
+import { useScheduleResources } from './Useschedule';
+import { useInstructorAvailability, useVehicleAvailability } from './Useschedule';
+import { toISO } from './Scheduleutils';
 
 const Field = ({ label, children, error }) => (
   <div>

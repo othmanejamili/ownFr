@@ -2,7 +2,7 @@
 //  ScheduleDetailDrawer — view + quick actions
 // ─────────────────────────────────────────────
 import React, { useState } from 'react';
-import { fmtTime, fmtDate, fmtDuration, statusBadge, lessonTypeBadge, lessonStyle } from '../Schedule/scheduleUtils';
+import { fmtTime, fmtDate, fmtDuration, statusBadge, lessonTypeBadge, lessonStyle } from './Scheduleutils';
 
 const Row = ({ label, value, mono = false }) => (
   <div className="flex items-start justify-between py-2.5 border-b border-white/[0.04]">

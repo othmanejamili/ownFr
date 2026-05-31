@@ -7,7 +7,7 @@ import { fetchSchedules, fetchMySchedule, fetchUpcoming,
   createSchedule, updateSchedule, patchSchedule,
   deleteSchedule, cancelSchedule, rescheduleLesson,
   fetchLessons, fetchInstructors, fetchVehicles,
-} from  '../Schedule/Scheduleapi';
+} from  './Scheduleapi';
 
 export function useSchedules(params = {}) {
   const [schedules, setSchedules] = useState([]);

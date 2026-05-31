@@ -2,7 +2,7 @@
 //  MonthView — full-month grid
 // ─────────────────────────────────────────────
 import React from 'react';
-import { sameDay, lessonStyle, DAYS } from '../Schedule/scheduleUtils';
+import { sameDay, lessonStyle, DAYS } from './Scheduleutils';
 
 const getMonthGrid = (year, month) => {
   const firstDay = new Date(year, month, 1);
