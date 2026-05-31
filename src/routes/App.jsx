@@ -17,7 +17,7 @@ import Instructorpage from '../pages/Dashboard/Owner/AddMembres/Instructorspage'
 import LessonsPage from '../pages/Dashboard/Owner/LessonCrud/Lessonspage';
 import AttendancePage from '../pages/Dashboard/Owner/Attendance/Attendancepage';
 import VehiclePage from '../pages/Dashboard/Owner/Vehicle/Vehiclepage';
-import SchedulePage from '../pages/Dashboard/Owner/Schedule/SchedulePage';
+import SchedulePage from '../pages/Dashboard/Owner/Schedule/Schedulepage';
 import Analyticspage from '../pages/Dashboard/Owner/Analytics/Analyticspage';
 import Automatedmessagepage from '../pages/Dashboard/Owner/Message/Automatedmessagepage';
 import CommunicationTemplatepage from '../pages/Dashboard/Owner/Template/Communicationtemplatepage';
