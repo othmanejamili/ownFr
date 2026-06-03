@@ -1,9 +1,14 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
+const API = import.meta.env.VITE_API_URL;
 /* ─────────────────────────────────────────────
    Sidebar — School Owner Dashboard
-   Sticky left panel with school context card,
-   nav groups, and owner profile footer.
+   Real data fetched via axios from:
+     GET /api/users/me/         → owner profile
+     GET /api/schools/          → school info
+     GET /api/subscriptions/    → active plan
 ───────────────────────────────────────────── */
 
 const LogoMark = () => (
@@ -17,10 +22,10 @@ const LogoMark = () => (
 
 const NavItem = ({ to, icon, label, badge, badgeColor = 'blue' }) => {
   const badgeStyles = {
-    blue:   'bg-blue-600/20 text-blue-400',
-    amber:  'bg-amber-500/20 text-amber-400',
-    red:    'bg-red-500/20 text-red-400',
-    green:  'bg-emerald-500/20 text-emerald-400',
+    blue:  'bg-blue-600/20 text-blue-400',
+    amber: 'bg-amber-500/20 text-amber-400',
+    red:   'bg-red-500/20 text-red-400',
+    green: 'bg-emerald-500/20 text-emerald-400',
   };
 
   return (
@@ -53,95 +58,241 @@ const SectionLabel = ({ text }) => (
   </div>
 );
 
-// ── SVG icons ─────────────────────────────────────────────────
 const icons = {
-  grid: <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1" y="1" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><rect x="8" y="1" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><rect x="1" y="8" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><rect x="8" y="8" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/></svg>,
-  calendar: <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1" y="2" width="12" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M1 5h12M4 1v2M10 1v2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
-  students: <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="4.5" r="2.8" stroke="currentColor" strokeWidth="1.2"/><path d="M1.5 13c0-3 2.5-4.5 5.5-4.5S12 10 12 13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
+  grid:        <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1" y="1" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><rect x="8" y="1" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><rect x="1" y="8" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><rect x="8" y="8" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/></svg>,
+  calendar:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1" y="2" width="12" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M1 5h12M4 1v2M10 1v2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
+  students:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="4.5" r="2.8" stroke="currentColor" strokeWidth="1.2"/><path d="M1.5 13c0-3 2.5-4.5 5.5-4.5S12 10 12 13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
   instructors: <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M7 1l1.4 4h4.1L9.1 7.4l1.4 4.2L7 8.8 3.5 11.6l1.4-4.2L1.5 5h4.1z" stroke="currentColor" strokeWidth="1.1"/></svg>,
-  payments: <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M2 7h10M7 2v10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/><circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.2"/></svg>,
-  invoices: <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.2"/><path d="M4 4h6M4 7h6M4 10h3" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/></svg>,
-  reports: <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M2 10l3-5 2.5 3L10 4l2 5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
-  messages: <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M12 2H2a1 1 0 00-1 1v6a1 1 0 001 1h3l2 2.5L9 10h3a1 1 0 001-1V3a1 1 0 00-1-1z" stroke="currentColor" strokeWidth="1.2"/></svg>,
-  feedback: <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M7 1l1.4 4h4.1L9.1 7.4l1.4 4.2L7 8.8 3.5 11.6l1.4-4.2L1.5 5h4.1z" stroke="currentColor" strokeWidth="1.1"/></svg>,
-  settings: <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="7" r="2" stroke="currentColor" strokeWidth="1.2"/><path d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M2.5 2.5l1 1M10.5 10.5l1 1M11.5 2.5l-1 1M3.5 10.5l-1 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
-  lessons: <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M2 2h8v8H2z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M10 4l2-1v7l-2 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 5h4M4 7h3" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/></svg>,
-  attendance: <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.2"/><path d="M7 3v4l2.5 2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M1.5 1.5L1 1M12.5 1.5L13 1" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/></svg>,
-  vehicle: <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1.5" y="5" width="11" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2"/><path d="M3.5 10v1.5M10.5 10v1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/><circle cx="4.5" cy="10" r="1.2" stroke="currentColor" strokeWidth="1"/><circle cx="9.5" cy="10" r="1.2" stroke="currentColor" strokeWidth="1"/><path d="M3 7.5L1.5 7.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/><path d="M11 7.5L12.5 7.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/><path d="M4.5 5l1-2.5h3l1 2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  payments:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M2 7h10M7 2v10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/><circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.2"/></svg>,
+  invoices:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.2"/><path d="M4 4h6M4 7h6M4 10h3" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/></svg>,
+  reports:     <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M2 10l3-5 2.5 3L10 4l2 5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  messages:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M12 2H2a1 1 0 00-1 1v6a1 1 0 001 1h3l2 2.5L9 10h3a1 1 0 001-1V3a1 1 0 00-1-1z" stroke="currentColor" strokeWidth="1.2"/></svg>,
+  feedback:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M7 1l1.4 4h4.1L9.1 7.4l1.4 4.2L7 8.8 3.5 11.6l1.4-4.2L1.5 5h4.1z" stroke="currentColor" strokeWidth="1.1"/></svg>,
+  settings:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="7" r="2" stroke="currentColor" strokeWidth="1.2"/><path d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M2.5 2.5l1 1M10.5 10.5l1 1M11.5 2.5l-1 1M3.5 10.5l-1 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
+  lessons:     <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M2 2h8v8H2z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M10 4l2-1v7l-2 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 5h4M4 7h3" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/></svg>,
+  attendance:  <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.2"/><path d="M7 3v4l2.5 2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  vehicle:     <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1.5" y="5" width="11" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2"/><path d="M3.5 10v1.5M10.5 10v1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/><circle cx="4.5" cy="10" r="1.2" stroke="currentColor" strokeWidth="1"/><circle cx="9.5" cy="10" r="1.2" stroke="currentColor" strokeWidth="1"/><path d="M4.5 5l1-2.5h3l1 2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
 };
 
-// ─────────────────────────────────────────────────────────────
-const Sidebar = () => (
-  <aside className="w-[212px] flex-shrink-0 bg-[#0B1221] border-r border-white/[0.06]
-    flex flex-col h-screen sticky top-0 overflow-y-auto">
-
-    {/* Logo */}
-    <div className="flex items-center gap-2.5 px-4 py-[18px] border-b border-white/[0.06]">
-      <LogoMark />
-      <span className="font-sora text-[14px] font-bold text-white tracking-tight">DriveIQ</span>
-    </div>
-
-    {/* School context card */}
-    <div className="mx-2.5 mt-3 bg-blue-600/10 border border-blue-500/20 rounded-xl px-3 py-2.5">
-      <div className="font-sora text-[12px] font-bold text-white mb-1">Auto École Atlas</div>
-      <div className="flex items-center gap-1 text-[10px] text-white/35 font-dm mb-2">
-        <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
-          <circle cx="4.5" cy="3.2" r="1.6" stroke="currentColor" strokeWidth="0.9" />
-          <path d="M4.5 8.5C4.5 8.5 1 5.8 1 3.2a3.5 3.5 0 017 0c0 2.6-3.5 5.3-3.5 5.3z"
-            stroke="currentColor" strokeWidth="0.9" />
-        </svg>
-        Casablanca, Morocco
-      </div>
-      <span className="text-[9px] font-bold px-2 py-0.5 rounded-md
-        bg-violet-600/20 text-violet-400 font-dm">
-        Pro Plan 
-      </span>
-    </div>
-
-    {/* Nav */}
-    <nav className="flex-1 pt-1">
-      <SectionLabel text="MAIN" />
-      <NavItem to={'/dashboard/owner'}     icon={icons.grid}        label="Dashboard"  badgeColor='blue'/>
-      <NavItem to={'/dashboard/owner/schedule'}      icon={icons.calendar}    label="Schedule"      badgeColor='blue' />
-      <NavItem to={'/dashboard/owner/students'}     icon={icons.students}    label="Students"      badgeColor='blue' />
-      <NavItem to={'/dashboard/owner/instructors'}   icon={icons.instructors} label="Instructors"  badgeColor='blue'/>
-      <NavItem to={'/dashboard/owner/membres'}   icon={icons.instructors} label="Membres"   badgeColor='blue'/>
-      <NavItem to={'/dashboard/owner/lessons'}    icon={icons.lessons} label="Lessons"  badgeColor='blue'/>
-      <NavItem to={'/dashboard/owner/attendance'}  icon={icons.attendance} label="Attendance"  badgeColor='blue' />
-      <NavItem to={'/dashboard/owner/vehicle'}    icon={icons.vehicle}  label="Vehicle" badgeColor='blue' />
-
-      <SectionLabel text="FINANCE" />
-      <NavItem       icon={icons.payments}    label="Payments"     badgeColor="amber" />
-      <NavItem to={'/dashboard/owner/analytics'}        icon={icons.reports}     label="Analytics"  badgeColor='blue'/>
-      <NavItem to={'/dashboard/owner/raposrts'}        icon={icons.invoices}     label="Reports"  badgeColor='blue'/>
-
-      <SectionLabel text="ENGAGE" />
-      <NavItem to={'/dashboard/owner/template'}       icon={icons.messages}    label="Template"       badgeColor="blue" />
-      <NavItem to={'/dashboard/owner/automated-message'}       icon={icons.messages}    label="Messages"       badgeColor="red" />
-      <NavItem to={'/dashboard/owner/feedback'}       icon={icons.feedback}    label="Feedback" badgeColor='blue'/>
-
-      <SectionLabel text="SYSTEM" />
-      <NavItem  to={'/dashboard/owner/settings'}      icon={icons.settings}    label="Settings" />
-    </nav>
-
-    {/* Owner profile */}
-    <div className="p-3 border-t border-white/[0.06]">
-      <div className="flex items-center gap-2.5 bg-[#0F1A2E] border border-white/[0.07]
-        rounded-xl px-3 py-2.5 cursor-pointer hover:border-white/[0.12] transition-colors">
-        <div className="w-7 h-7 rounded-full bg-violet-700 flex items-center justify-center
-          text-[10px] font-bold text-white flex-shrink-0 font-dm">
-          KA
-        </div>
-        <div className="min-w-0">
-          <div className="text-[12px] font-semibold text-white font-dm truncate">Karim Alaoui</div>
-          <div className="text-[10px] text-white/30 font-dm">School Owner</div>
-        </div>
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="ml-auto text-white/25 flex-shrink-0">
-          <path d="M3 5l3 3 3-3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </div>
-    </div>
-  </aside>
+// ── Skeleton pulse block ──────────────────────────────────────
+const Skeleton = ({ className }) => (
+  <div className={`animate-pulse bg-white/10 rounded ${className}`} />
 );
+
+// ── Pick badge colour by plan name ────────────────────────────
+const planBadgeStyle = (planName = '') => {
+  const n = planName.toLowerCase();
+  if (n.includes('pro'))        return 'bg-violet-600/20 text-violet-400';
+  if (n.includes('enterprise')) return 'bg-amber-500/20  text-amber-400';
+  if (n.includes('basic'))      return 'bg-blue-600/20   text-blue-400';
+  return 'bg-emerald-500/20 text-emerald-400';
+};
+
+// ── Build initials from first/last name ───────────────────────
+const getInitials = (first = '', last = '') =>
+  `${first.charAt(0)}${last.charAt(0)}`.toUpperCase() || '?';
+
+// ─────────────────────────────────────────────────────────────
+const Sidebar = () => {
+  const [school,       setSchool]       = useState(null);
+  const [owner,        setOwner]        = useState(null);
+  const [subscription, setSubscription] = useState(null);
+  const [loading,      setLoading]      = useState(true);
+  const [error,        setError]        = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const load = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // 1. Current authenticated user
+        const { data: userData } = await axios.get(`${API}/users/me/`, {
+          withCredentials: true,
+          signal: controller.signal,
+        });
+        setOwner(userData);
+
+        // 2. School list (owner sees only their own school(s))
+        const { data: schoolData } = await axios.get(`${API}/drivingschool/`, {
+          withCredentials: true,
+          signal: controller.signal,
+        });
+        const school =
+          Array.isArray(schoolData)
+            ? schoolData[0]
+            : schoolData?.results?.[0] ?? null;
+        setSchool(school);
+
+        // 3. Active subscription for that school
+        if (school?.id) {
+          const { data: subData } = await axios.get(`${API}/schoolsubscription/`, {
+            params: { school: school.id },
+            withCredentials: true,
+            signal: controller.signal,
+          });
+          const sub =
+            Array.isArray(subData)
+              ? subData[0]
+              : subData?.results?.[0] ?? null;
+          setSubscription(sub);
+        }
+      } catch (err) {
+        if (axios.isCancel(err)) return;
+        console.error('[Sidebar] fetch error:', err);
+        setError(err.response?.data?.detail || 'Failed to load sidebar data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+    return () => controller.abort();
+  }, []);
+
+  // ── Derived display values ────────────────────────────────
+  const planName    = subscription?.plan_name ?? subscription?.plan_details?.name ?? '';
+  const initials    = owner ? getInitials(owner.first_name, owner.last_name) : '??';
+  const fullName    = owner
+    ? `${owner.first_name ?? ''} ${owner.last_name ?? ''}`.trim() || owner.username
+    : '';
+  const schoolAddr  = school?.address ?? '';
+
+  return (
+    <aside
+      className="w-[212px] flex-shrink-0 bg-[#0B1221] border-r border-white/[0.06]
+        flex flex-col h-screen sticky top-0 overflow-y-auto"
+    >
+      {/* ── Logo ── */}
+      <div className="flex items-center gap-2.5 px-4 py-[18px] border-b border-white/[0.06]">
+        <LogoMark />
+        <span className="font-sora text-[14px] font-bold text-white tracking-tight">DriveIQ</span>
+      </div>
+
+      {/* ── School context card ── */}
+      <div className="mx-2.5 mt-3 bg-blue-600/10 border border-blue-500/20 rounded-xl px-3 py-2.5 min-h-[68px]">
+        {loading ? (
+          <div className="space-y-1.5 pt-0.5">
+            <Skeleton className="h-3 w-32" />
+            <Skeleton className="h-2.5 w-24" />
+            <Skeleton className="h-4 w-16 rounded-md mt-1" />
+          </div>
+        ) : error ? (
+          <span className="text-[10px] text-red-400/60 font-dm">Unable to load school info</span>
+        ) : (
+          <>
+            <div className="font-sora text-[12px] font-bold text-white mb-1 truncate">
+              {school?.name || '—'}
+            </div>
+
+            {schoolAddr && (
+              <div className="flex items-center gap-1 text-[10px] text-white/35 font-dm mb-2">
+                <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+                  <circle cx="4.5" cy="3.2" r="1.6" stroke="currentColor" strokeWidth="0.9" />
+                  <path
+                    d="M4.5 8.5C4.5 8.5 1 5.8 1 3.2a3.5 3.5 0 017 0c0 2.6-3.5 5.3-3.5 5.3z"
+                    stroke="currentColor"
+                    strokeWidth="0.9"
+                  />
+                </svg>
+                <span className="truncate">{schoolAddr}</span>
+              </div>
+            )}
+
+            {planName && (
+              <span
+                className={`text-[9px] font-bold px-2 py-0.5 rounded-md font-dm ${planBadgeStyle(planName)}`}
+              >
+                {planName}
+              </span>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* ── Nav ── */}
+      <nav className="flex-1 pt-1">
+        <SectionLabel text="MAIN" />
+        <NavItem to="/dashboard/owner"                    icon={icons.grid}        label="Dashboard"   />
+        <NavItem to="/dashboard/owner/schedule"           icon={icons.calendar}    label="Schedule"    />
+        <NavItem to="/dashboard/owner/students"           icon={icons.students}    label="Students"    />
+        <NavItem to="/dashboard/owner/instructors"        icon={icons.instructors} label="Instructors" />
+        <NavItem to="/dashboard/owner/membres"            icon={icons.instructors} label="Membres"     />
+        <NavItem to="/dashboard/owner/lessons"            icon={icons.lessons}     label="Lessons"     />
+        <NavItem to="/dashboard/owner/attendance"         icon={icons.attendance}  label="Attendance"  />
+        <NavItem to="/dashboard/owner/vehicle"            icon={icons.vehicle}     label="Vehicle"     />
+
+        <SectionLabel text="FINANCE" />
+        <NavItem                                          icon={icons.payments}    label="Payments"    badgeColor="amber" />
+        <NavItem to="/dashboard/owner/analytics"          icon={icons.reports}     label="Analytics"   />
+        <NavItem to="/dashboard/owner/raposrts"           icon={icons.invoices}    label="Reports"     />
+
+        <SectionLabel text="ENGAGE" />
+        <NavItem to="/dashboard/owner/template"           icon={icons.messages}    label="Template"    />
+        <NavItem to="/dashboard/owner/automated-message"  icon={icons.messages}    label="Messages"    badgeColor="red" />
+        <NavItem to="/dashboard/owner/feedback"           icon={icons.feedback}    label="Feedback"    />
+
+        <SectionLabel text="SYSTEM" />
+        <NavItem to="/dashboard/owner/settings"           icon={icons.settings}    label="Settings"    />
+      </nav>
+
+      {/* ── Owner profile footer ── */}
+      <div className="p-3 border-t border-white/[0.06]">
+        <div
+          className="flex items-center gap-2.5 bg-[#0F1A2E] border border-white/[0.07]
+            rounded-xl px-3 py-2.5 cursor-pointer hover:border-white/[0.12] transition-colors"
+        >
+          {loading ? (
+            <>
+              <Skeleton className="w-7 h-7 rounded-full flex-shrink-0" />
+              <div className="flex-1 min-w-0 space-y-1">
+                <Skeleton className="h-3 w-24" />
+                <Skeleton className="h-2.5 w-16" />
+              </div>
+            </>
+          ) : (
+            <>
+              <div
+                className="w-7 h-7 rounded-full bg-violet-700 flex items-center justify-center
+                  text-[10px] font-bold text-white flex-shrink-0 font-dm"
+              >
+                {initials}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-[12px] font-semibold text-white font-dm truncate">
+                  {fullName || '—'}
+                </div>
+                <div className="text-[10px] text-white/30 font-dm">School Owner</div>
+              </div>
+            </>
+          )}
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            className="ml-auto text-white/25 flex-shrink-0"
+          >
+            <path
+              d="M3 5l3 3 3-3"
+              stroke="currentColor"
+              strokeWidth="1.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+
+        {error && !loading && (
+          <p className="mt-1.5 text-[9px] text-red-400/50 font-dm text-center">
+            Could not load profile
+          </p>
+        )}
+      </div>
+    </aside>
+  );
+};
 
 export default Sidebar;
