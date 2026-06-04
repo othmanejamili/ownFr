@@ -7,7 +7,7 @@ import Sidebar from '../Sidebar'; // adjust path to your actual Sidebar
 
 import WeeklyCalendar      from './Weeklycalendar';
 import DayView             from './Dayview';
-import MonthView           from './MonthView';
+import MonthView           from './Monthview';
 import ScheduleFormModal   from './ScheduleFormModal';
 import ScheduleDetailDrawer from './ScheduleDetailDrawer';
 
