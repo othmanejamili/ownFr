@@ -12,8 +12,6 @@ import {
   CompletionDonut,
   ActivityFeed,
   PerformanceSummary,
-  UpcomingExams,
-  RecentPayments,
   
 } from './Dashboardcomponents';
 
@@ -138,12 +136,7 @@ const OwnerDashboard = () => {
             <div className="lg:col-span-1">
               <PerformanceSummary analytics={analytics} overview={overview} loading={loading} />
             </div>
-            <div className="lg:col-span-1">
-              <UpcomingExams />
-            </div>
-            <div className="lg:col-span-1">
-              <RecentPayments overview={overview} loading={loading} />
-            </div>
+
           </div>
 
           <div className="h-4" />

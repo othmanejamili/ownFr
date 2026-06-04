@@ -1,6 +1,5 @@
-// src/hooks/useDashboard.js
 import { useState, useEffect, useCallback } from 'react';
-import { dashboardApi } from './Dashboardapi';
+import { dashboardApi } from '../Owner/Dashboardapi';
 
 export const useDashboard = (range = '7d') => {
   const [overview,      setOverview]      = useState(null);
@@ -17,7 +16,6 @@ export const useDashboard = (range = '7d') => {
     setLoading(true);
     setError(null);
     try {
-      // Parallel fetch — overview + quick stats + notifications
       const [ov, qs, notif] = await Promise.all([
         dashboardApi.getOverview(),
         dashboardApi.getQuickStats(),
@@ -28,11 +26,8 @@ export const useDashboard = (range = '7d') => {
       setQuickStats(qs);
       setNotifications(notif.notifications || []);
 
-      // If we have a school id, fetch analytics for that school
-      const schoolId = ov?.schools?.[0]?.school_id ?? ov?.overview?.total_schools > 0
-        ? ov?.schools?.[0]?.school_id
-        : null;
-
+      // Pick first school_id from owner overview to fetch analytics
+      const schoolId = ov?.schools?.[0]?.school_id ?? null;
       if (schoolId) {
         try {
           const anal = await dashboardApi.getAnalyticsDashboard(
@@ -41,7 +36,8 @@ export const useDashboard = (range = '7d') => {
           );
           setAnalytics(anal);
         } catch {
-          // analytics optional — don't fail the whole dashboard
+          // analytics is optional — dashboard still works without it
+          setAnalytics(null);
         }
       }
     } catch (err) {
