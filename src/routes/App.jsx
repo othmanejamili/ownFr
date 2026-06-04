@@ -24,6 +24,7 @@ import CommunicationTemplatepage from '../pages/Dashboard/Owner/Template/Communi
 import ReportsPage from '../pages/Dashboard/Owner/Raports/Reportspage';
 import SettingsPage from '../pages/Dashboard/Owner/Settingspage';
 import FeedbackPage from '../pages/Dashboard/Owner/Feedback/Feedbackpage';
+import InstructorDashboard from '../pages/Dashboard/Instructor/Dashboard/InstuctorDashboard';
 function App() {
   return (
     <Router>
@@ -174,6 +175,16 @@ function App() {
           </ProtectedRoute>
         }
         />
+
+
+      <Route
+        path='/dashboard/instructor'
+        element={
+          <ProtectedRoute requiredRole="I">
+            <InstructorDashboard />
+          </ProtectedRoute>
+        }
+        /> 
 
 
 
