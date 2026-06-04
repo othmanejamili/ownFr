@@ -1,0 +1,290 @@
+import { NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const API = import.meta.env.VITE_API_URL;
+/* ─────────────────────────────────────────────
+   Sidebar — School instructor Dashboard
+   Real data fetched via axios from:
+     GET /api/users/me/         → instructor profile
+     GET /api/schools/          → school info
+     GET /api/subscriptions/    → active plan
+───────────────────────────────────────────── */
+
+const LogoMark = () => (
+  <div className="w-7 h-7 bg-blue-600 rounded-[7px] flex items-center justify-center flex-shrink-0">
+    <svg width="15" height="15" viewBox="0 0 18 18" fill="none">
+      <path d="M9 2L15 7.5V16H3V7.5L9 2Z" fill="white" />
+      <rect x="6.5" y="10" width="5" height="6" rx="1" fill="#1D4ED8" />
+    </svg>
+  </div>
+);
+
+const NavItem = ({ to, icon, label, badge, badgeColor = 'blue' }) => {
+  const badgeStyles = {
+    blue:  'bg-blue-600/20 text-blue-400',
+    amber: 'bg-amber-500/20 text-amber-400',
+    red:   'bg-red-500/20 text-red-400',
+    green: 'bg-emerald-500/20 text-emerald-400',
+  };
+
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) => [
+        'flex items-center gap-2.5 px-2.5 py-2 rounded-[9px] mx-2 my-px',
+        'text-[12px] font-medium transition-all duration-200 group',
+        isActive
+          ? 'bg-blue-600/15 text-blue-300 font-semibold'
+          : 'text-white/40 hover:bg-white/[0.04] hover:text-white/80',
+      ].join(' ')}
+    >
+      <span className="w-3.5 h-3.5 flex-shrink-0 opacity-70 group-[.active]:opacity-100">
+        {icon}
+      </span>
+      <span className="flex-1 font-dm">{label}</span>
+      {badge !== undefined && (
+        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md font-dm ${badgeStyles[badgeColor]}`}>
+          {badge}
+        </span>
+      )}
+    </NavLink>
+  );
+};
+
+const SectionLabel = ({ text }) => (
+  <div className="px-4 pt-3 pb-1 text-[10px] font-bold text-white/20 tracking-[0.8px] font-dm">
+    {text}
+  </div>
+);
+
+const icons = {
+  grid:        <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1" y="1" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><rect x="8" y="1" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><rect x="1" y="8" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><rect x="8" y="8" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/></svg>,
+  calendar:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1" y="2" width="12" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M1 5h12M4 1v2M10 1v2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
+  students:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="4.5" r="2.8" stroke="currentColor" strokeWidth="1.2"/><path d="M1.5 13c0-3 2.5-4.5 5.5-4.5S12 10 12 13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
+  instructors: <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M7 1l1.4 4h4.1L9.1 7.4l1.4 4.2L7 8.8 3.5 11.6l1.4-4.2L1.5 5h4.1z" stroke="currentColor" strokeWidth="1.1"/></svg>,
+  payments:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M2 7h10M7 2v10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/><circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.2"/></svg>,
+  invoices:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.2"/><path d="M4 4h6M4 7h6M4 10h3" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/></svg>,
+  reports:     <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M2 10l3-5 2.5 3L10 4l2 5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  messages:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M12 2H2a1 1 0 00-1 1v6a1 1 0 001 1h3l2 2.5L9 10h3a1 1 0 001-1V3a1 1 0 00-1-1z" stroke="currentColor" strokeWidth="1.2"/></svg>,
+  feedback:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M7 1l1.4 4h4.1L9.1 7.4l1.4 4.2L7 8.8 3.5 11.6l1.4-4.2L1.5 5h4.1z" stroke="currentColor" strokeWidth="1.1"/></svg>,
+  settings:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="7" r="2" stroke="currentColor" strokeWidth="1.2"/><path d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M2.5 2.5l1 1M10.5 10.5l1 1M11.5 2.5l-1 1M3.5 10.5l-1 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
+  lessons:     <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M2 2h8v8H2z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M10 4l2-1v7l-2 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 5h4M4 7h3" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/></svg>,
+  attendance:  <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.2"/><path d="M7 3v4l2.5 2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  vehicle:     <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1.5" y="5" width="11" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2"/><path d="M3.5 10v1.5M10.5 10v1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/><circle cx="4.5" cy="10" r="1.2" stroke="currentColor" strokeWidth="1"/><circle cx="9.5" cy="10" r="1.2" stroke="currentColor" strokeWidth="1"/><path d="M4.5 5l1-2.5h3l1 2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+};
+
+// ── Skeleton pulse block ──────────────────────────────────────
+const Skeleton = ({ className }) => (
+  <div className={`animate-pulse bg-white/10 rounded ${className}`} />
+);
+
+// ── Pick badge colour by plan name ────────────────────────────
+const planBadgeStyle = (planName = '') => {
+  const n = planName.toLowerCase();
+  if (n.includes('pro'))        return 'bg-violet-600/20 text-violet-400';
+  if (n.includes('enterprise')) return 'bg-amber-500/20  text-amber-400';
+  if (n.includes('basic'))      return 'bg-blue-600/20   text-blue-400';
+  return 'bg-emerald-500/20 text-emerald-400';
+};
+
+// ── Build initials from first/last name ───────────────────────
+const getInitials = (first = '', last = '') =>
+  `${first.charAt(0)}${last.charAt(0)}`.toUpperCase() || '?';
+
+// ─────────────────────────────────────────────────────────────
+const Sidebar = () => {
+  const [school,       setSchool]       = useState(null);
+  const [instructor,   setInstructor]        = useState(null);
+  const [subscription, setSubscription] = useState(null);
+  const [loading,      setLoading]      = useState(true);
+  const [error,        setError]        = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const load = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // 1. Current authenticated user
+        const { data: userData } = await axios.get(`${API}/users/me/`, {
+          withCredentials: true,
+          signal: controller.signal,
+        });
+        setInstructor(userData);
+
+        // 2. School list (instructor sees only their own school(s))
+        const { data: schoolData } = await axios.get(`${API}/drivingschool/`, {
+          withCredentials: true,
+          signal: controller.signal,
+        });
+        const school =
+          Array.isArray(schoolData)
+            ? schoolData[0]
+            : schoolData?.results?.[0] ?? null;
+        setSchool(school);
+
+
+      } catch (err) {
+        if (axios.isCancel(err)) return;
+        console.error('[Sidebar] fetch error:', err);
+        setError(err.response?.data?.detail || 'Failed to load sidebar data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+    return () => controller.abort();
+  }, []);
+
+  // ── Derived display values ────────────────────────────────
+  const initials    = instructor ? getInitials(instructor.first_name, instructor.last_name) : '??';
+  const fullName    = instructor
+    ? `${instructor.first_name ?? ''} ${instructor.last_name ?? ''}`.trim() || instructor.username
+    : '';
+  const picture_profile_url = instructor?.picture_profile_url;
+  const schoolAddr  = school?.address ?? '';
+
+  return (
+    <aside
+      className="w-[212px] flex-shrink-0 bg-[#0B1221] border-r border-white/[0.06]
+        flex flex-col h-screen sticky top-0 overflow-y-auto"
+    >
+      {/* ── Logo ── */}
+      <div className="flex items-center gap-2.5 px-4 py-[18px] border-b border-white/[0.06]">
+        <LogoMark />
+        <span className="font-sora text-[14px] font-bold text-white tracking-tight">DriveIQ</span>
+      </div>
+
+      {/* ── School context card ── */}
+      <div className="mx-2.5 mt-3 bg-blue-600/10 border border-blue-500/20 rounded-xl px-3 py-2.5 min-h-[68px]">
+        {loading ? (
+          <div className="space-y-1.5 pt-0.5">
+            <Skeleton className="h-3 w-32" />
+            <Skeleton className="h-2.5 w-24" />
+            <Skeleton className="h-4 w-16 rounded-md mt-1" />
+          </div>
+        ) : error ? (
+          <span className="text-[10px] text-red-400/60 font-dm">Unable to load school info</span>
+        ) : (
+          <>
+            <div className="font-sora text-[12px] font-bold text-white mb-1 truncate">
+              {school?.name || '—'}
+            </div>
+
+            {schoolAddr && (
+              <div className="flex items-center gap-1 text-[10px] text-white/35 font-dm mb-2">
+                <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+                  <circle cx="4.5" cy="3.2" r="1.6" stroke="currentColor" strokeWidth="0.9" />
+                  <path
+                    d="M4.5 8.5C4.5 8.5 1 5.8 1 3.2a3.5 3.5 0 017 0c0 2.6-3.5 5.3-3.5 5.3z"
+                    stroke="currentColor"
+                    strokeWidth="0.9"
+                  />
+                </svg>
+                <span className="truncate">{schoolAddr}</span>
+              </div>
+            )}
+
+
+          </>
+        )}
+      </div>
+
+      {/* ── Nav ── */}
+      <nav className="flex-1 pt-1">
+        <SectionLabel text="MAIN" />
+        <NavItem to="/dashboard/instructor"                    icon={icons.grid}        label="Dashboard"   />
+        <NavItem            icon={icons.calendar}    label="Schedule"    />
+        <NavItem            icon={icons.students}    label="Students"    />
+        <NavItem        icon={icons.instructors} label="Instructors" />
+        <NavItem             icon={icons.instructors} label="Membres"     />
+        <NavItem             icon={icons.lessons}     label="Lessons"     />
+        <NavItem          icon={icons.attendance}  label="Attendance"  />
+        <NavItem             icon={icons.vehicle}     label="Vehicle"     />
+
+        <SectionLabel text="FINANCE" />
+        <NavItem                                          icon={icons.payments}    label="Payments"    badgeColor="amber" />
+        <NavItem           icon={icons.reports}     label="Analytics"   />
+        <NavItem            icon={icons.invoices}    label="Reports"     />
+
+        <SectionLabel text="ENGAGE" />
+        <NavItem            icon={icons.messages}    label="Template"    />
+        <NavItem   icon={icons.messages}    label="Messages"    badgeColor="red" />
+        <NavItem            icon={icons.feedback}    label="Feedback"    />
+
+        <SectionLabel text="SYSTEM" />
+        <NavItem            icon={icons.settings}    label="Settings"    />
+      </nav>
+
+      {/* ── instructor profile footer ── */}
+      <div className="p-3 border-t border-white/[0.06]">
+        <div
+          className="flex items-center gap-2.5 bg-[#0F1A2E] border border-white/[0.07]
+            rounded-xl px-3 py-2.5 cursor-pointer hover:border-white/[0.12] transition-colors"
+        >
+          {loading ? (
+            <>
+              <Skeleton className="w-7 h-7 rounded-full flex-shrink-0" />
+              <div className="flex-1 min-w-0 space-y-1">
+                <Skeleton className="h-3 w-24" />
+                <Skeleton className="h-2.5 w-16" />
+              </div>
+            </>
+          ) : (
+            <>
+      {picture_profile_url ? (
+        <img
+          src={picture_profile_url}
+          alt={fullName}
+          className="w-7 h-7 rounded-full object-cover"
+          onError={(e) => {
+            console.log("Image failed:", e.target.src);
+          }}
+        />
+      ) : (
+        <div className="w-7 h-7 rounded-full bg-violet-700 flex items-center justify-center text-[10px] font-bold text-white">
+          {initials}
+        </div>
+      )}
+                
+            
+              <div className="min-w-0 flex-1">
+                <div className="text-[12px] font-semibold text-white font-dm truncate">
+                  {fullName || '—'}
+                </div>
+                <div className="text-[10px] text-white/30 font-dm">School Instructor</div>
+              </div>
+            </>
+          )}
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            className="ml-auto text-white/25 flex-shrink-0"
+          >
+            <path
+              d="M3 5l3 3 3-3"
+              stroke="currentColor"
+              strokeWidth="1.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+
+        {error && !loading && (
+          <p className="mt-1.5 text-[9px] text-red-400/50 font-dm text-center">
+            Could not load profile
+          </p>
+        )}
+      </div>
+    </aside>
+  );
+};
+
+export default Sidebar;
