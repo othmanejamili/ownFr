@@ -199,15 +199,11 @@ const Sidebar = () => {
         <SectionLabel text="MAIN" />
         <NavItem to="/dashboard/instructor"                    icon={icons.grid}        label="Dashboard"   />
         <NavItem            icon={icons.calendar}    label="Schedule"    />
-        <NavItem            icon={icons.students}    label="Students"    />
-        <NavItem        icon={icons.instructors} label="Instructors" />
-        <NavItem             icon={icons.instructors} label="Membres"     />
-        <NavItem             icon={icons.lessons}     label="Lessons"     />
+        <NavItem to={'/dashboard/instructor/lesson'}             icon={icons.lessons}     label="Lessons"     />
         <NavItem          icon={icons.attendance}  label="Attendance"  />
         <NavItem             icon={icons.vehicle}     label="Vehicle"     />
 
         <SectionLabel text="FINANCE" />
-        <NavItem                                          icon={icons.payments}    label="Payments"    badgeColor="amber" />
         <NavItem           icon={icons.reports}     label="Analytics"   />
         <NavItem            icon={icons.invoices}    label="Reports"     />
 
