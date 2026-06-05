@@ -201,7 +201,7 @@ const Sidebar = () => {
         <NavItem            icon={icons.calendar}    label="Schedule"    />
         <NavItem to={'/dashboard/instructor/lesson'}             icon={icons.lessons}     label="Lessons"     />
         <NavItem to={'/dashboard/instructor/attendance'}   icon={icons.attendance}  label="Attendance"  />
-        <NavItem             icon={icons.vehicle}     label="Vehicle"     />
+        <NavItem to={'/dashboard/instructor/vehicle'}            icon={icons.vehicle}     label="Vehicle"     />
 
         <SectionLabel text="FINANCE" />
         <NavItem           icon={icons.reports}     label="Analytics"   />

@@ -27,6 +27,7 @@ import FeedbackPage from '../pages/Dashboard/Owner/Feedback/Feedbackpage';
 import InstructorDashboard from '../pages/Dashboard/Instructor/Dashboard/InstuctorDashboard';
 import LessonsPageInstructor from '../pages/Dashboard/Instructor/Lesson/LessonsPage';
 import InstructorAttendancePage from '../pages/Dashboard/Instructor/Attendance/Attendancepage';
+import InstructorVehiclePage from '../pages/Dashboard/Instructor/Vehicle/VehiclePage';
 function App() {
   return (
     <Router>
@@ -202,6 +203,15 @@ function App() {
         element={
           <ProtectedRoute requiredRole="I">
             <InstructorAttendancePage />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/instructor/vehicle'
+        element={
+          <ProtectedRoute requiredRole="I">
+            <InstructorVehiclePage />
           </ProtectedRoute>
         }
         /> 
