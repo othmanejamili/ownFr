@@ -26,6 +26,7 @@ import SettingsPage from '../pages/Dashboard/Owner/Settingspage';
 import FeedbackPage from '../pages/Dashboard/Owner/Feedback/Feedbackpage';
 import InstructorDashboard from '../pages/Dashboard/Instructor/Dashboard/InstuctorDashboard';
 import LessonsPageInstructor from '../pages/Dashboard/Instructor/Lesson/LessonsPage';
+import InstructorAttendancePage from '../pages/Dashboard/Instructor/Attendance/Attendancepage';
 function App() {
   return (
     <Router>
@@ -192,6 +193,15 @@ function App() {
         element={
           <ProtectedRoute requiredRole="I">
             <LessonsPageInstructor />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/instructor/attendance'
+        element={
+          <ProtectedRoute requiredRole="I">
+            <InstructorAttendancePage />
           </ProtectedRoute>
         }
         /> 

@@ -200,7 +200,7 @@ const Sidebar = () => {
         <NavItem to="/dashboard/instructor"                    icon={icons.grid}        label="Dashboard"   />
         <NavItem            icon={icons.calendar}    label="Schedule"    />
         <NavItem to={'/dashboard/instructor/lesson'}             icon={icons.lessons}     label="Lessons"     />
-        <NavItem          icon={icons.attendance}  label="Attendance"  />
+        <NavItem to={'/dashboard/instructor/attendance'}   icon={icons.attendance}  label="Attendance"  />
         <NavItem             icon={icons.vehicle}     label="Vehicle"     />
 
         <SectionLabel text="FINANCE" />
