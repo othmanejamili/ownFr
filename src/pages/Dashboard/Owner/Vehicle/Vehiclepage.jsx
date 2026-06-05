@@ -623,26 +623,33 @@ const VehicleDrawer = ({ vehicle, onClose, onEdit, onMaintenance, onPictures, on
 };
 
 /* ─── Pictures Modal ─────────────────────────────────────────── */
+/* ─── Pictures Modal ─────────────────────────────────────────── */
 const PicturesModal = ({ open, vehicle, onClose, showToast }) => {
   const [pictures,  setPictures]  = useState([]);
   const [loading,   setLoading]   = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [editing,   setEditing]   = useState(null);   // { id, caption }
   const [err,       setErr]       = useState('');
-  const fileRef = useRef();
+  const fileRef    = useRef();
+  const replaceRef = useRef();
+  const [replaceId, setReplaceId] = useState(null);
 
+  /* ── fetch via dedicated endpoint ── */
   const fetchPictures = useCallback(async () => {
     if (!vehicle) return;
-    setLoading(true);
+    setLoading(true); setErr('');
     try {
-      const data = await vehicleApi.getAll(`?include_images=true`);
-      const found = (Array.isArray(data) ? data : data?.results || []).find(v => v.id === vehicle.id);
-      setPictures(found?.image_list || []);
+      const data = await axios
+        .get(`${API}/vehicle/${vehicle.id}/pictures/`)
+        .then(r => r.data);
+      setPictures(data.pictures || []);
     } catch { setErr('Failed to load pictures'); }
-    finally { setLoading(false); }
+    finally   { setLoading(false); }
   }, [vehicle]);
 
-  useEffect(() => { if (open) fetchPictures(); }, [open, fetchPictures]);
+  useEffect(() => { if (open) { setPictures([]); setEditing(null); fetchPictures(); } }, [open, fetchPictures]);
 
+  /* ── upload new ── */
   const handleUpload = async (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
@@ -655,9 +662,50 @@ const PicturesModal = ({ open, vehicle, onClose, showToast }) => {
       fetchPictures();
     } catch (ex) {
       setErr(ex.response?.data?.error || 'Upload failed');
-    } finally { setUploading(false); }
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
   };
 
+  /* ── replace a single picture ── */
+  const handleReplace = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !replaceId) return;
+    setErr('');
+    try {
+      // Delete old, then upload replacement
+      await vehicleApi.deletePicture(vehicle.id, replaceId);
+      const form = new FormData();
+      form.append('images', file);
+      await vehicleApi.uploadPictures(vehicle.id, form);
+      showToast('Photo replaced');
+      fetchPictures();
+    } catch (ex) {
+      setErr(ex.response?.data?.error || 'Replace failed');
+    } finally {
+      setReplaceId(null);
+      e.target.value = '';
+    }
+  };
+
+  /* ── save caption edit ── */
+  const handleSaveCaption = async () => {
+    if (!editing) return;
+    try {
+      await axios.patch(
+        `${API}/vehicle/${vehicle.id}/pictures/${editing.id}/`,
+        { caption: editing.caption }
+      );
+      setPictures(p => p.map(x => x.id === editing.id ? { ...x, caption: editing.caption } : x));
+      showToast('Caption updated');
+      setEditing(null);
+    } catch {
+      showToast('Failed to update caption', 'error');
+    }
+  };
+
+  /* ── delete ── */
   const handleDelete = async (picId) => {
     try {
       await vehicleApi.deletePicture(vehicle.id, picId);
@@ -666,6 +714,7 @@ const PicturesModal = ({ open, vehicle, onClose, showToast }) => {
     } catch { showToast('Failed to remove photo', 'error'); }
   };
 
+  /* ── set primary ── */
   const handleSetPrimary = async (picId) => {
     try {
       await vehicleApi.setPrimaryPicture(vehicle.id, picId);
@@ -675,12 +724,14 @@ const PicturesModal = ({ open, vehicle, onClose, showToast }) => {
   };
 
   if (!open) return null;
+
   return (
     <div className="fixed inset-0 z-[65] flex items-center justify-center p-4"
       style={{ background: 'rgba(6,11,24,0.85)', backdropFilter: 'blur(8px)' }}>
-      <div className="bg-[#0B1221] border border-white/[0.08] rounded-2xl w-full max-w-[600px]
+      <div className="bg-[#0B1221] border border-white/[0.08] rounded-2xl w-full max-w-[680px]
         shadow-2xl flex flex-col max-h-[85vh]">
 
+        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-violet-600/15 border border-violet-500/20
@@ -692,74 +743,179 @@ const PicturesModal = ({ open, vehicle, onClose, showToast }) => {
               </p>
             </div>
           </div>
-          <button onClick={onClose}
-            className="w-7 h-7 rounded-lg bg-white/[0.04] hover:bg-white/[0.08]
-              text-white/40 hover:text-white flex items-center justify-center transition-all">
-            {Icon.close}
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Upload new photos button */}
+            <button
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading || pictures.length >= 15}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-600/20 border
+                border-violet-500/30 rounded-lg text-[11px] font-semibold text-violet-300
+                hover:bg-violet-600/30 transition-all disabled:opacity-40">
+              {uploading
+                ? <span className="w-3 h-3 rounded-full border-2 border-violet-300/30 border-t-violet-300 animate-spin" />
+                : Icon.plus}
+              Upload
+            </button>
+            <button onClick={onClose}
+              className="w-7 h-7 rounded-lg bg-white/[0.04] hover:bg-white/[0.08]
+                text-white/40 hover:text-white flex items-center justify-center transition-all">
+              {Icon.close}
+            </button>
+          </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4">
-          {err && <p className="text-[11px] text-red-400">{err}</p>}
+        {/* Hidden file inputs */}
+        <input ref={fileRef}    type="file" accept="image/*" multiple className="hidden" onChange={handleUpload} />
+        <input ref={replaceRef} type="file" accept="image/*"           className="hidden" onChange={handleReplace} />
 
-          {/* Upload area */}
-          <button
-            onClick={() => fileRef.current?.click()}
-            disabled={uploading || pictures.length >= 15}
-            className="w-full border-2 border-dashed border-white/[0.08] rounded-2xl
-              py-8 flex flex-col items-center gap-3 hover:border-blue-500/40
-              hover:bg-blue-600/05 transition-all disabled:opacity-40 cursor-pointer">
-            <span className="text-2xl">{uploading ? '⏳' : '📷'}</span>
-            <p className="text-[12px] font-semibold text-white/50">
-              {uploading ? 'Uploading…' : 'Click to upload photos'}
-            </p>
-            <p className="text-[10px] text-white/25">JPG, PNG, WEBP · Max 10MB each</p>
-          </button>
-          <input ref={fileRef} type="file" accept="image/*" multiple
-            className="hidden" onChange={handleUpload} />
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4">
+
+          {err && (
+            <div className="flex items-center gap-2 bg-red-500/[0.07] border border-red-500/20
+              rounded-xl px-4 py-2.5">
+              {Icon.warn}
+              <p className="text-[11px] text-red-400">{err}</p>
+            </div>
+          )}
+
+          {/* Caption edit inline banner */}
+          {editing && (
+            <div className="flex items-center gap-3 bg-blue-600/10 border border-blue-500/20
+              rounded-xl px-4 py-3">
+              <span className="text-[10px] text-blue-400 font-bold uppercase tracking-wide flex-shrink-0">
+                Editing caption
+              </span>
+              <input
+                className={cls(inputCls, 'flex-1 py-1.5')}
+                value={editing.caption}
+                onChange={e => setEditing(ed => ({ ...ed, caption: e.target.value }))}
+                onKeyDown={e => { if (e.key === 'Enter') handleSaveCaption(); if (e.key === 'Escape') setEditing(null); }}
+                autoFocus
+              />
+              <button onClick={handleSaveCaption}
+                className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-500
+                  rounded-lg text-[11px] font-bold text-white transition-all flex-shrink-0">
+                {Icon.check} Save
+              </button>
+              <button onClick={() => setEditing(null)}
+                className="w-7 h-7 rounded-lg bg-white/[0.04] hover:bg-white/[0.08]
+                  text-white/40 hover:text-white flex items-center justify-center transition-all flex-shrink-0">
+                {Icon.close}
+              </button>
+            </div>
+          )}
 
           {/* Grid */}
           {loading ? (
             <div className="grid grid-cols-3 gap-3">
               {Array(6).fill(0).map((_, i) => (
-                <div key={i} className="h-28 rounded-xl bg-white/[0.04] animate-pulse" />
+                <div key={i} className="h-36 rounded-xl bg-white/[0.04] animate-pulse" />
               ))}
             </div>
           ) : pictures.length === 0 ? (
-            <p className="text-center text-[11px] text-white/25 py-6">No photos yet</p>
+            /* Empty drop zone */
+            <button
+              onClick={() => fileRef.current?.click()}
+              className="w-full border-2 border-dashed border-white/[0.08] rounded-2xl
+                py-14 flex flex-col items-center gap-3 hover:border-violet-500/40
+                hover:bg-violet-600/05 transition-all cursor-pointer">
+              <span className="text-3xl">📷</span>
+              <p className="text-[12px] font-semibold text-white/50">No photos yet — click to upload</p>
+              <p className="text-[10px] text-white/25">JPG, PNG, WEBP · Max 10 MB each</p>
+            </button>
           ) : (
             <div className="grid grid-cols-3 gap-3">
               {pictures.map(pic => (
-                <div key={pic.id} className="relative group rounded-xl overflow-hidden
-                  border border-white/[0.06]">
+                <div key={pic.id}
+                  className={cls(
+                    'relative group rounded-xl overflow-hidden border transition-all',
+                    editing?.id === pic.id
+                      ? 'border-blue-500/50 ring-1 ring-blue-500/30'
+                      : 'border-white/[0.06]',
+                  )}>
+
+                  {/* Image */}
                   <img
                     src={pic.thumbnail_url || pic.image_url || pic.image}
-                    alt={pic.caption}
-                    className="w-full h-28 object-cover"
+                    alt={pic.caption || 'Vehicle photo'}
+                    className="w-full h-36 object-cover"
                   />
+
+                  {/* Primary badge */}
                   {pic.is_primary && (
                     <span className="absolute top-2 left-2 text-[8px] font-bold px-1.5 py-0.5
-                      rounded-md bg-blue-600 text-white">PRIMARY</span>
+                      rounded-md bg-blue-600 text-white z-10">PRIMARY</span>
                   )}
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100
-                    transition-opacity flex items-center justify-center gap-2">
-                    {!pic.is_primary && (
-                      <button onClick={() => handleSetPrimary(pic.id)}
-                        className="w-7 h-7 rounded-lg bg-blue-600 hover:bg-blue-500
-                          text-white flex items-center justify-center transition-colors text-[9px]"
-                        title="Set primary">⭐</button>
-                    )}
-                    <button onClick={() => handleDelete(pic.id)}
-                      className="w-7 h-7 rounded-lg bg-red-600 hover:bg-red-500
-                        text-white flex items-center justify-center transition-colors text-[12px]"
-                      title="Delete">×</button>
+
+                  {/* Caption strip */}
+                  <div className="px-2.5 py-2 bg-[#0B1221]">
+                    <p className="text-[10px] text-white/40 truncate">
+                      {pic.caption || <span className="italic text-white/20">No caption</span>}
+                    </p>
+                  </div>
+
+                  {/* Hover action overlay */}
+                  <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100
+                    transition-opacity flex flex-col items-center justify-center gap-2 px-2">
+
+                    {/* Row 1: primary + edit caption */}
+                    <div className="flex items-center gap-1.5">
+                      {!pic.is_primary && (
+                        <button onClick={() => handleSetPrimary(pic.id)}
+                          title="Set as primary"
+                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg
+                            bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-semibold
+                            transition-colors">
+                          ⭐ Primary
+                        </button>
+                      )}
+                      <button
+                        onClick={() => setEditing({ id: pic.id, caption: pic.caption || '' })}
+                        title="Edit caption"
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg
+                          bg-white/[0.15] hover:bg-white/[0.25] text-white text-[10px] font-semibold
+                          transition-colors">
+                        {Icon.edit} Caption
+                      </button>
+                    </div>
+
+                    {/* Row 2: replace + delete */}
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => { setReplaceId(pic.id); replaceRef.current?.click(); }}
+                        title="Replace photo"
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg
+                          bg-amber-600/80 hover:bg-amber-600 text-white text-[10px] font-semibold
+                          transition-colors">
+                        {Icon.refresh} Replace
+                      </button>
+                      <button onClick={() => handleDelete(pic.id)}
+                        title="Delete photo"
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg
+                          bg-red-600/80 hover:bg-red-600 text-white text-[10px] font-semibold
+                          transition-colors">
+                        {Icon.trash} Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           )}
         </div>
+
+        {/* Footer count */}
+        {!loading && pictures.length > 0 && (
+          <div className="px-5 py-3 border-t border-white/[0.05] flex items-center justify-between">
+            <span className="text-[10px] text-white/25">
+              {pictures.length} photo{pictures.length !== 1 ? 's' : ''} · {15 - pictures.length} slots remaining
+            </span>
+            <span className="text-[10px] text-white/20">
+              Hover a photo to edit, replace, or delete it
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
