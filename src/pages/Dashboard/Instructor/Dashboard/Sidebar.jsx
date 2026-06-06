@@ -198,6 +198,7 @@ const Sidebar = () => {
       <nav className="flex-1 pt-1">
         <SectionLabel text="MAIN" />
         <NavItem to="/dashboard/instructor"                    icon={icons.grid}        label="Dashboard"   />
+        <NavItem to={'/dashboard/instructor/students'}          icon={icons.students}    label="Students"    />
         <NavItem to={'/dashboard/instructor/schedule'}            icon={icons.calendar}    label="Schedule"    />
         <NavItem to={'/dashboard/instructor/lesson'}             icon={icons.lessons}     label="Lessons"     />
         <NavItem to={'/dashboard/instructor/attendance'}   icon={icons.attendance}  label="Attendance"  />
