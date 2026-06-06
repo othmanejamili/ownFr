@@ -8,13 +8,11 @@ import Sidebar from '../Dashboard/Sidebar'; // adjust path to your actual Sideba
 import WeeklyCalendar      from './Weeklycalendar';
 import DayView             from './Dayview';
 import MonthView           from './Monthview';
-import ScheduleFormModal   from './ScheduleFormModal';
-import ScheduleDetailDrawer from './ScheduleDetailDrawer';
+import InstructorScheduleDetailDrawer from './ScheduledetaildrawerInstructor';
 
 import {
   useSchedules,
   useMySchedule,
-  useScheduleMutations,
 } from './Useschedule';
 
 import {
@@ -85,11 +83,8 @@ const InstructorSchedulePage = () => {
   }));
 
   // ── modal state ────────────────────────────────────────────────
-  const [formOpen,    setFormOpen]    = useState(false);
-  const [editTarget,  setEditTarget]  = useState(null);   // schedule being edited
   const [drawerOpen,  setDrawerOpen]  = useState(false);
   const [drawerItem,  setDrawerItem]  = useState(null);   // schedule being viewed
-  const [mutationErr, setMutationErr] = useState(null);
 
   // ── data ────────────────────────────────────────────────────────
   // For week/day: fetch by date range
@@ -107,58 +102,9 @@ const InstructorSchedulePage = () => {
   const summary = myData?.summary ?? {};
 
   // ── mutations ───────────────────────────────────────────────────
-  const { create, update, cancel, reschedule, saving } = useScheduleMutations(refetch);
 
   // ── handlers ────────────────────────────────────────────────────
 
-  const openCreate = useCallback((slotDate) => {
-    setEditTarget(slotDate
-      ? { start_time: slotDate.toISOString(), end_time: addDays(slotDate, 0).toISOString() }
-      : null
-    );
-    setMutationErr(null);
-    setFormOpen(true);
-  }, []);
-
-  const openEdit = useCallback((schedule) => {
-    setDrawerOpen(false);
-    setEditTarget(schedule);
-    setMutationErr(null);
-    setFormOpen(true);
-  }, []);
-
-  const handleSave = useCallback(async (data) => {
-    try {
-      setMutationErr(null);
-      if (editTarget?.id) {
-        await update(editTarget.id, data);
-      } else {
-        await create(data);
-      }
-      setFormOpen(false);
-      setEditTarget(null);
-    } catch (e) {
-      setMutationErr(e.message);
-    }
-  }, [editTarget, create, update]);
-
-  const handleCancel = useCallback(async (id) => {
-    try {
-      await cancel(id);
-      setDrawerOpen(false);
-    } catch (e) {
-      console.error(e);
-    }
-  }, [cancel]);
-
-  const handleReschedule = useCallback(async (id, data) => {
-    try {
-      await reschedule(id, data);
-      setDrawerOpen(false);
-    } catch (e) {
-      console.error(e);
-    }
-  }, [reschedule]);
 
   const openDetail = useCallback((schedule) => {
     setDrawerItem(schedule);
@@ -258,15 +204,6 @@ const InstructorSchedulePage = () => {
                 <path d="M12 2a10 10 0 0110 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
               </svg>
             )}
-
-            <button
-              onClick={() => openCreate(null)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500
-                text-[13px] font-semibold text-white transition-colors"
-            >
-              <Icon d={ICONS.plus} size={12} />
-              New schedule
-            </button>
           </div>
         </header>
 
@@ -305,7 +242,6 @@ const InstructorSchedulePage = () => {
               weekStart={weekStart}
               schedules={schedules}
               onEventClick={openDetail}
-              onSlotClick={openCreate}
             />
           )}
           {viewMode === 'day' && (
@@ -313,7 +249,6 @@ const InstructorSchedulePage = () => {
               date={activeDay}
               schedules={schedules}
               onEventClick={openDetail}
-              onSlotClick={openCreate}
             />
           )}
           {viewMode === 'month' && (
@@ -329,23 +264,13 @@ const InstructorSchedulePage = () => {
       </main>
 
       {/* ── Drawers / modals ─────────────────────────────────── */}
-      <ScheduleFormModal
-        open={formOpen}
-        onClose={() => { setFormOpen(false); setEditTarget(null); }}
-        onSave={handleSave}
-        initial={editTarget}
-        saving={saving}
-        error={mutationErr}
-      />
 
-      <ScheduleDetailDrawer
+
+      <InstructorScheduleDetailDrawer
         open={drawerOpen}
         schedule={drawerItem}
         onClose={() => setDrawerOpen(false)}
-        onEdit={openEdit}
-        onCancel={handleCancel}
-        onReschedule={handleReschedule}
-        saving={saving}
+
       />
     </div>
   );
