@@ -4,8 +4,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { fetchSchedules, fetchMySchedule, fetchUpcoming,
   fetchInstructorAvailability, fetchVehicleAvailability,
-  createSchedule, updateSchedule, patchSchedule,
-  deleteSchedule, cancelSchedule, rescheduleLesson,
   fetchLessons, fetchInstructors, fetchVehicles,
 } from  './Scheduleapi';
 
@@ -131,52 +129,3 @@ export function useScheduleResources() {
   return { lessons, instructors, vehicles, loading };
 }
 
-export function useScheduleMutations(refetch) {
-  const [saving,   setSaving]   = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [error,    setError]    = useState(null);
-
-  const create = async (data) => {
-    setSaving(true); setError(null);
-    try { const res = await createSchedule(data); refetch?.(); return res; }
-    catch (e) { setError(e.message); throw e; }
-    finally { setSaving(false); }
-  };
-
-  const update = async (id, data) => {
-    setSaving(true); setError(null);
-    try { const res = await updateSchedule(id, data); refetch?.(); return res; }
-    catch (e) { setError(e.message); throw e; }
-    finally { setSaving(false); }
-  };
-
-  const patch = async (id, data) => {
-    setSaving(true); setError(null);
-    try { const res = await patchSchedule(id, data); refetch?.(); return res; }
-    catch (e) { setError(e.message); throw e; }
-    finally { setSaving(false); }
-  };
-
-  const remove = async (id) => {
-    setDeleting(true); setError(null);
-    try { await deleteSchedule(id); refetch?.(); }
-    catch (e) { setError(e.message); throw e; }
-    finally { setDeleting(false); }
-  };
-
-  const cancel = async (id) => {
-    setSaving(true); setError(null);
-    try { const res = await cancelSchedule(id); refetch?.(); return res; }
-    catch (e) { setError(e.message); throw e; }
-    finally { setSaving(false); }
-  };
-
-  const reschedule = async (id, data) => {
-    setSaving(true); setError(null);
-    try { const res = await rescheduleLesson(id, data); refetch?.(); return res; }
-    catch (e) { setError(e.message); throw e; }
-    finally { setSaving(false); }
-  };
-
-  return { create, update, patch, remove, cancel, reschedule, saving, deleting, error };
-}
