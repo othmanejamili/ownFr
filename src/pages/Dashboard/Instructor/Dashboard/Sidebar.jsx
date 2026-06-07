@@ -205,8 +205,7 @@ const Sidebar = () => {
         <NavItem to={'/dashboard/instructor/vehicle'}            icon={icons.vehicle}     label="Vehicle"     />
 
         <SectionLabel text="FINANCE" />
-        <NavItem           icon={icons.reports}     label="Analytics"   />
-        <NavItem            icon={icons.invoices}    label="Reports"     />
+        <NavItem to={'/dashboard/instructor/analytics'}          icon={icons.reports}     label="Analytics"   />
 
         <SectionLabel text="ENGAGE" />
         <NavItem            icon={icons.messages}    label="Template"    />
