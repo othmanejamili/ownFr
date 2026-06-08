@@ -261,7 +261,7 @@ const Sidebar = () => {
           : schoolData?.results?.[0] ?? null;
         setSchool(school);
 
-        const { data: subData } = await axios.get(`${API}/subscriptions/`, {
+        const { data: subData } = await axios.get(`${API}/schoolsubscription/`, {
           withCredentials: true,
           signal: controller.signal,
         });
