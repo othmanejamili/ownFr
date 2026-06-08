@@ -32,6 +32,7 @@ import InstructorSchedulePage from '../pages/Dashboard/Instructor/Schedule/Sched
 import InstructoreStudentsPage from '../pages/Dashboard/Instructor/Students/Studentspage';
 import InstructorAnalyticsPage from '../pages/Dashboard/Instructor/Analytics/Analyticspage';
 import InstructorAutomatedMessagePage from '../pages/Dashboard/Instructor/Message/Automatedmessagepage';
+import InstructorCommunicationTemplatePage from '../pages/Dashboard/Instructor/Template/Communicationtemplatepage';
 function App() {
   return (
     <Router>
@@ -252,6 +253,15 @@ function App() {
         element={
           <ProtectedRoute requiredRole="I">
             <InstructorAutomatedMessagePage />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/instructor/template'
+        element={
+          <ProtectedRoute requiredRole="I">
+            <InstructorCommunicationTemplatePage />
           </ProtectedRoute>
         }
         /> 
