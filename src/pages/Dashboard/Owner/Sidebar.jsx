@@ -112,8 +112,7 @@ const Sidebar = () => (
       <NavItem       icon={icons.messages}    label="Messages"    badge={5}   badgeColor="red" />
       <NavItem       icon={icons.feedback}    label="Feedback" />
 
-      <SectionLabel text="SYSTEM" />
-      <NavItem       icon={icons.settings}    label="Settings" />
+
     </nav>
 
     {/* Owner profile */}
