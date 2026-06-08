@@ -170,6 +170,43 @@ const Sidebar = () => {
         <LogoMark />
         <span className="font-sora text-[14px] font-bold text-white tracking-tight">DriveIQ</span>
       </div>
+      <span className="text-[9px] font-bold px-2 py-0.5 rounded-md
+        bg-violet-600/20 text-violet-400 font-dm">
+        Pro Plan
+      </span>
+    </div>
+
+    {/* Nav */}
+    <nav className="flex-1 pt-1">
+      <SectionLabel text="MAIN" />
+      <NavItem      icon={icons.grid}        label="Dashboard" />
+      <NavItem       icon={icons.calendar}    label="Schedule"    badge={31}  badgeColor="blue" />
+      <NavItem      icon={icons.students}    label="Students"    badge={142} badgeColor="blue" />
+      <NavItem    icon={icons.instructors} label="Instructors" />
+
+      <SectionLabel text="FINANCE" />
+      <NavItem       icon={icons.payments}    label="Payments"    badge={3}   badgeColor="amber" />
+      <NavItem       icon={icons.invoices}    label="Invoices" />
+      <NavItem        icon={icons.reports}     label="Reports" />
+
+      <SectionLabel text="ENGAGE" />
+      <NavItem       icon={icons.messages}    label="Messages"    badge={5}   badgeColor="red" />
+      <NavItem       icon={icons.feedback}    label="Feedback" />
+
+
+    </nav>
+
+    {/* Owner profile */}
+    <div className="p-3 border-t border-white/[0.06]">
+      <div className="flex items-center gap-2.5 bg-[#0F1A2E] border border-white/[0.07]
+        rounded-xl px-3 py-2.5 cursor-pointer hover:border-white/[0.12] transition-colors">
+        <div className="w-7 h-7 rounded-full bg-violet-700 flex items-center justify-center
+          text-[10px] font-bold text-white flex-shrink-0 font-dm">
+          KA
+        </div>
+        <div className="min-w-0">
+          <div className="text-[12px] font-semibold text-white font-dm truncate">Karim Alaoui</div>
+          <div className="text-[10px] text-white/30 font-dm">School Owner</div>
 
       {/* ── School context card ── */}
       <div className="mx-2.5 mt-3 bg-blue-600/10 border border-blue-500/20 rounded-xl px-3 py-2.5 min-h-[68px]">
