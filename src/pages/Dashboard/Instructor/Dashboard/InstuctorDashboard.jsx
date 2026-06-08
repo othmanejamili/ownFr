@@ -65,16 +65,6 @@ const Topbar = ({ range, onRangeChange, instructorName, todayUpcoming }) => {
           </button>
         ))}
       </div>
-
-      {/* CTA */}
-      <button className="flex items-center gap-1.5 px-3.5 py-2 bg-blue-600
-        hover:bg-blue-500 rounded-[7px] text-[12px] font-semibold text-white
-        transition-all duration-200 hover:-translate-y-px font-dm">
-        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-          <path d="M5.5 1v9M1 5.5h9" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-        New lesson
-      </button>
     </header>
   );
 };
