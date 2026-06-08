@@ -25,6 +25,15 @@ import ReportsPage from '../pages/Dashboard/Owner/Raports/Reportspage';
 import SettingsPage from '../pages/Dashboard/Owner/Settingspage';
 import FeedbackPage from '../pages/Dashboard/Owner/Feedback/Feedbackpage';
 import InstructorDashboard from '../pages/Dashboard/Instructor/Dashboard/InstuctorDashboard';
+import LessonsPageInstructor from '../pages/Dashboard/Instructor/Lesson/LessonsPage';
+import InstructorAttendancePage from '../pages/Dashboard/Instructor/Attendance/Attendancepage';
+import InstructorVehiclePage from '../pages/Dashboard/Instructor/Vehicle/VehiclePage';
+import InstructorSchedulePage from '../pages/Dashboard/Instructor/Schedule/Schedulepage';
+import InstructoreStudentsPage from '../pages/Dashboard/Instructor/Students/Studentspage';
+import InstructorAnalyticsPage from '../pages/Dashboard/Instructor/Analytics/Analyticspage';
+import InstructorAutomatedMessagePage from '../pages/Dashboard/Instructor/Message/Automatedmessagepage';
+import InstructorCommunicationTemplatePage from '../pages/Dashboard/Instructor/Template/Communicationtemplatepage';
+import InstructorFeedbackPage from '../pages/Dashboard/Instructor/Feedback/Feedbackpage';
 function App() {
   return (
     <Router>
@@ -182,6 +191,87 @@ function App() {
         element={
           <ProtectedRoute requiredRole="I">
             <InstructorDashboard />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/instructor/lesson'
+        element={
+          <ProtectedRoute requiredRole="I">
+            <LessonsPageInstructor />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/instructor/attendance'
+        element={
+          <ProtectedRoute requiredRole="I">
+            <InstructorAttendancePage />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/instructor/vehicle'
+        element={
+          <ProtectedRoute requiredRole="I">
+            <InstructorVehiclePage />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/instructor/schedule'
+        element={
+          <ProtectedRoute requiredRole="I">
+            <InstructorSchedulePage />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/instructor/students'
+        element={
+          <ProtectedRoute requiredRole="I">
+            <InstructoreStudentsPage />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/instructor/analytics'
+        element={
+          <ProtectedRoute requiredRole="I">
+            <InstructorAnalyticsPage />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/instructor/messages'
+        element={
+          <ProtectedRoute requiredRole="I">
+            <InstructorAutomatedMessagePage />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/instructor/template'
+        element={
+          <ProtectedRoute requiredRole="I">
+            <InstructorCommunicationTemplatePage />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/instructor/feedback'
+        element={
+          <ProtectedRoute requiredRole="I">
+            <InstructorFeedbackPage />
           </ProtectedRoute>
         }
         /> 

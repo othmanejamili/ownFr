@@ -21,7 +21,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
-import Sidebar from '../Sidebar';
+import Sidebar from '../Dashboard/Sidebar';
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -1131,7 +1131,7 @@ const VehicleRow = ({ vehicle, onEdit, onDelete, onDetails, onMaintenance, onPic
 /* ─────────────────────────────────────────────────────────────
    MAIN PAGE
 ───────────────────────────────────────────────────────────── */
-const VehiclePage = () => {
+const InstructorVehiclePage = () => {
   const [vehicles,      setVehicles]      = useState([]);
   const [schools,       setSchools]       = useState([]);
   const [stats,         setStats]         = useState(null);
@@ -1424,4 +1424,4 @@ const VehiclePage = () => {
   );
 };
 
-export default VehiclePage;
+export default InstructorVehiclePage;
