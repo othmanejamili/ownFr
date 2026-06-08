@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { dashboardApi } from '../Owner/Dashboardapi';
+import { dashboardApi } from './Dashboardapi';
 
 export const useDashboard = (range = '7d') => {
   const [overview,      setOverview]      = useState(null);

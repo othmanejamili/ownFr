@@ -1,7 +1,7 @@
 // src/pages/OwnerDashboard/OwnerDashboard.jsx
 import { useState } from 'react';
 import Sidebar from './Sidebar';
-import { useDashboard } from './Usedashboard';
+import { useDashboard } from './usedashboard';
 import {
   KpiStrip,
   LessonChart,
