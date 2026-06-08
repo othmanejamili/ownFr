@@ -122,22 +122,10 @@ const ProfileMenu = ({ owner, fullName, initials, pictureUrl, onClose, menuRef }
 
   const menuItems = [
     {
-      icon: icons.profile,
-      label: 'View Profile',
-      sub: 'Manage your info',
-      onClick: () => { navigate('/dashboard/owner/profile'); onClose(); },
-    },
-    {
       icon: icons.settings,
       label: 'Settings',
       sub: 'Preferences & security',
       onClick: () => { navigate('/dashboard/owner/settings'); onClose(); },
-    },
-    {
-      icon: icons.help,
-      label: 'Help & Support',
-      sub: 'Docs & contact',
-      onClick: () => { navigate('/dashboard/owner/support'); onClose(); },
     },
   ];
 
