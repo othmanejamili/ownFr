@@ -33,6 +33,7 @@ import InstructoreStudentsPage from '../pages/Dashboard/Instructor/Students/Stud
 import InstructorAnalyticsPage from '../pages/Dashboard/Instructor/Analytics/Analyticspage';
 import InstructorAutomatedMessagePage from '../pages/Dashboard/Instructor/Message/Automatedmessagepage';
 import InstructorCommunicationTemplatePage from '../pages/Dashboard/Instructor/Template/Communicationtemplatepage';
+import InstructorFeedbackPage from '../pages/Dashboard/Instructor/Feedback/Feedbackpage';
 function App() {
   return (
     <Router>
@@ -262,6 +263,15 @@ function App() {
         element={
           <ProtectedRoute requiredRole="I">
             <InstructorCommunicationTemplatePage />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/instructor/feedback'
+        element={
+          <ProtectedRoute requiredRole="I">
+            <InstructorFeedbackPage />
           </ProtectedRoute>
         }
         /> 
