@@ -208,7 +208,7 @@ const Sidebar = () => {
         <NavItem to={'/dashboard/instructor/analytics'}          icon={icons.reports}     label="Analytics"   />
 
         <SectionLabel text="ENGAGE" />
-        <NavItem            icon={icons.messages}    label="Template"    />
+        <NavItem to={'/dashboard/instructor/template'}            icon={icons.messages}    label="Template"    />
         <NavItem to={'/dashboard/instructor/messages'}   icon={icons.messages}    label="Messages"    badgeColor="red" />
         <NavItem            icon={icons.feedback}    label="Feedback"    />
 
