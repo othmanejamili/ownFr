@@ -17,7 +17,7 @@ import {
   DashboardError,
 } from './Dashboardcomponents';
 
-// ── Topbar ────────────────────────────────────────────────────
+// ── Topbar  ────────────────────────────────────────────────────
 const Topbar = ({ range, onRangeChange, ownerName, totalSchools, liveCount }) => {
   const now  = new Date();
   const hour = now.getHours();
