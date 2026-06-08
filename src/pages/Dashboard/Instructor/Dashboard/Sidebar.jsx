@@ -1,14 +1,11 @@
-import { NavLink } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 const API = import.meta.env.VITE_API_URL;
+
 /* ─────────────────────────────────────────────
-   Sidebar — School instructor Dashboard
-   Real data fetched via axios from:
-     GET /api/users/me/         → instructor profile
-     GET /api/schools/          → school info
-     GET /api/subscriptions/    → active plan
+   Sidebar — School Instructor Dashboard
 ───────────────────────────────────────────── */
 
 const LogoMark = () => (
@@ -62,7 +59,6 @@ const icons = {
   grid:        <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1" y="1" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><rect x="8" y="1" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><rect x="1" y="8" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><rect x="8" y="8" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/></svg>,
   calendar:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1" y="2" width="12" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M1 5h12M4 1v2M10 1v2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
   students:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="4.5" r="2.8" stroke="currentColor" strokeWidth="1.2"/><path d="M1.5 13c0-3 2.5-4.5 5.5-4.5S12 10 12 13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
-  instructors: <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M7 1l1.4 4h4.1L9.1 7.4l1.4 4.2L7 8.8 3.5 11.6l1.4-4.2L1.5 5h4.1z" stroke="currentColor" strokeWidth="1.1"/></svg>,
   payments:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M2 7h10M7 2v10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/><circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.2"/></svg>,
   invoices:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.2"/><path d="M4 4h6M4 7h6M4 10h3" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/></svg>,
   reports:     <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M2 10l3-5 2.5 3L10 4l2 5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
@@ -72,33 +68,133 @@ const icons = {
   lessons:     <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M2 2h8v8H2z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M10 4l2-1v7l-2 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 5h4M4 7h3" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/></svg>,
   attendance:  <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.2"/><path d="M7 3v4l2.5 2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
   vehicle:     <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1.5" y="5" width="11" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2"/><path d="M3.5 10v1.5M10.5 10v1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/><circle cx="4.5" cy="10" r="1.2" stroke="currentColor" strokeWidth="1"/><circle cx="9.5" cy="10" r="1.2" stroke="currentColor" strokeWidth="1"/><path d="M4.5 5l1-2.5h3l1 2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  // Additional icons for profile menu
+  profile:     <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="4.5" r="2.8" stroke="currentColor" strokeWidth="1.2"/><path d="M1.5 13c0-3 2.5-4.5 5.5-4.5S12 10 12 13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
+  logout:      <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M5 2H2a1 1 0 00-1 1v8a1 1 0 001 1h3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/><path d="M9.5 9.5L13 7l-3.5-2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M13 7H5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
+  help:        <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.2"/><path d="M5.5 5.5a1.5 1.5 0 012.8.7c0 1-1.3 1.3-1.3 2.3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/><circle cx="7" cy="10.5" r="0.6" fill="currentColor"/></svg>,
 };
 
-// ── Skeleton pulse block ──────────────────────────────────────
 const Skeleton = ({ className }) => (
   <div className={`animate-pulse bg-white/10 rounded ${className}`} />
 );
 
-// ── Pick badge colour by plan name ────────────────────────────
-const planBadgeStyle = (planName = '') => {
-  const n = planName.toLowerCase();
-  if (n.includes('pro'))        return 'bg-violet-600/20 text-violet-400';
-  if (n.includes('enterprise')) return 'bg-amber-500/20  text-amber-400';
-  if (n.includes('basic'))      return 'bg-blue-600/20   text-blue-400';
-  return 'bg-emerald-500/20 text-emerald-400';
-};
-
-// ── Build initials from first/last name ───────────────────────
 const getInitials = (first = '', last = '') =>
   `${first.charAt(0)}${last.charAt(0)}`.toUpperCase() || '?';
+
+// ── Profile Popup Menu ────────────────────────────────────────
+const ProfileMenu = ({ instructor, fullName, initials, pictureUrl, onClose, menuRef }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    const refresh =
+      localStorage.getItem('refresh') || sessionStorage.getItem('refresh');
+
+    try {
+      await axios.post(
+        `${API}/auth/logout/`,
+        { refresh },
+        {
+          headers: {
+            Authorization: `Bearer ${
+              localStorage.getItem('access') || sessionStorage.getItem('access')
+            }`,
+          },
+        }
+      );
+    } catch (err) {
+      console.error('Logout failed:', err);
+    } finally {
+      localStorage.removeItem('access');
+      localStorage.removeItem('refresh');
+      sessionStorage.removeItem('access');
+      sessionStorage.removeItem('refresh');
+      delete axios.defaults.headers.common['Authorization'];
+      navigate('/login');
+    }
+  };
+
+  const menuItems = [
+    {
+    },
+  ];
+
+  return (
+    <div
+      ref={menuRef}
+      className="absolute bottom-[calc(100%+8px)] left-2 right-2 z-50
+        bg-[#0F1A2E] border border-white/[0.09] rounded-2xl shadow-2xl shadow-black/60
+        overflow-hidden"
+      style={{ animation: 'slideUp 0.18s ease' }}
+    >
+      <style>{`
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(8px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+
+      {/* Header — avatar + name */}
+      <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/[0.06]">
+        {pictureUrl ? (
+          <img
+            src={pictureUrl}
+            alt={fullName}
+            className="w-9 h-9 rounded-full object-cover ring-2 ring-blue-500/30 flex-shrink-0"
+          />
+        ) : (
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-600 to-blue-600
+            flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0">
+            {initials}
+          </div>
+        )}
+        <div className="min-w-0">
+          <div className="text-[12px] font-semibold text-white font-dm truncate">{fullName || '—'}</div>
+          <div className="text-[10px] text-white/35 font-dm truncate">
+            {instructor?.email || 'School Instructor'}
+          </div>
+        </div>
+      </div>
+
+      {/* Menu items */}
+      <div className="py-1.5">
+        {menuItems.map((item) => (
+          <>
+          </>
+        ))}
+      </div>
+
+      {/* Divider + Logout */}
+      <div className="border-t border-white/[0.06] px-2.5 py-2">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl
+            hover:bg-red-500/10 transition-colors group text-left"
+        >
+          <span className="w-3.5 h-3.5 flex-shrink-0 text-red-400/60 group-hover:text-red-400 transition-colors">
+            {icons.logout}
+          </span>
+          <div>
+            <div className="text-[11.5px] font-medium text-red-400/70 group-hover:text-red-400 font-dm transition-colors">
+              Log out
+            </div>
+            <div className="text-[10px] text-white/20 font-dm">End your session</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  );
+};
 
 // ─────────────────────────────────────────────────────────────
 const Sidebar = () => {
   const [school,       setSchool]       = useState(null);
-  const [instructor,   setInstructor]        = useState(null);
-  const [subscription, setSubscription] = useState(null);
+  const [instructor,   setInstructor]   = useState(null);
   const [loading,      setLoading]      = useState(true);
   const [error,        setError]        = useState(null);
+  const [menuOpen,     setMenuOpen]     = useState(false);
+
+  const menuRef    = useRef(null);
+  const triggerRef = useRef(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -108,25 +204,20 @@ const Sidebar = () => {
         setLoading(true);
         setError(null);
 
-        // 1. Current authenticated user
         const { data: userData } = await axios.get(`${API}/users/me/`, {
           withCredentials: true,
           signal: controller.signal,
         });
         setInstructor(userData);
 
-        // 2. School list (instructor sees only their own school(s))
         const { data: schoolData } = await axios.get(`${API}/drivingschool/`, {
           withCredentials: true,
           signal: controller.signal,
         });
-        const school =
-          Array.isArray(schoolData)
-            ? schoolData[0]
-            : schoolData?.results?.[0] ?? null;
+        const school = Array.isArray(schoolData)
+          ? schoolData[0]
+          : schoolData?.results?.[0] ?? null;
         setSchool(school);
-
-
       } catch (err) {
         if (axios.isCancel(err)) return;
         console.error('[Sidebar] fetch error:', err);
@@ -140,13 +231,27 @@ const Sidebar = () => {
     return () => controller.abort();
   }, []);
 
-  // ── Derived display values ────────────────────────────────
-  const initials    = instructor ? getInitials(instructor.first_name, instructor.last_name) : '??';
-  const fullName    = instructor
+  // Close menu on outside click
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handler = (e) => {
+      if (
+        menuRef.current && !menuRef.current.contains(e.target) &&
+        triggerRef.current && !triggerRef.current.contains(e.target)
+      ) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [menuOpen]);
+
+  const initials           = instructor ? getInitials(instructor.first_name, instructor.last_name) : '??';
+  const fullName           = instructor
     ? `${instructor.first_name ?? ''} ${instructor.last_name ?? ''}`.trim() || instructor.username
     : '';
   const picture_profile_url = instructor?.picture_profile_url;
-  const schoolAddr  = school?.address ?? '';
+  const schoolAddr         = school?.address ?? '';
 
   return (
     <aside
@@ -165,7 +270,6 @@ const Sidebar = () => {
           <div className="space-y-1.5 pt-0.5">
             <Skeleton className="h-3 w-32" />
             <Skeleton className="h-2.5 w-24" />
-            <Skeleton className="h-4 w-16 rounded-md mt-1" />
           </div>
         ) : error ? (
           <span className="text-[10px] text-red-400/60 font-dm">Unable to load school info</span>
@@ -174,22 +278,15 @@ const Sidebar = () => {
             <div className="font-sora text-[12px] font-bold text-white mb-1 truncate">
               {school?.name || '—'}
             </div>
-
             {schoolAddr && (
-              <div className="flex items-center gap-1 text-[10px] text-white/35 font-dm mb-2">
+              <div className="flex items-center gap-1 text-[10px] text-white/35 font-dm">
                 <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
                   <circle cx="4.5" cy="3.2" r="1.6" stroke="currentColor" strokeWidth="0.9" />
-                  <path
-                    d="M4.5 8.5C4.5 8.5 1 5.8 1 3.2a3.5 3.5 0 017 0c0 2.6-3.5 5.3-3.5 5.3z"
-                    stroke="currentColor"
-                    strokeWidth="0.9"
-                  />
+                  <path d="M4.5 8.5C4.5 8.5 1 5.8 1 3.2a3.5 3.5 0 017 0c0 2.6-3.5 5.3-3.5 5.3z" stroke="currentColor" strokeWidth="0.9" />
                 </svg>
                 <span className="truncate">{schoolAddr}</span>
               </div>
             )}
-
-
           </>
         )}
       </div>
@@ -197,34 +294,48 @@ const Sidebar = () => {
       {/* ── Nav ── */}
       <nav className="flex-1 pt-1">
         <SectionLabel text="MAIN" />
-        <NavItem to="/dashboard/instructor"                    icon={icons.grid}        label="Dashboard"   />
-        <NavItem            icon={icons.calendar}    label="Schedule"    />
-        <NavItem            icon={icons.students}    label="Students"    />
-        <NavItem        icon={icons.instructors} label="Instructors" />
-        <NavItem             icon={icons.instructors} label="Membres"     />
-        <NavItem             icon={icons.lessons}     label="Lessons"     />
-        <NavItem          icon={icons.attendance}  label="Attendance"  />
-        <NavItem             icon={icons.vehicle}     label="Vehicle"     />
+        <NavItem to="/dashboard/instructor"                  icon={icons.grid}       label="Dashboard"  />
+        <NavItem to="/dashboard/instructor/students"         icon={icons.students}   label="Students"   />
+        <NavItem to="/dashboard/instructor/schedule"         icon={icons.calendar}   label="Schedule"   />
+        <NavItem to="/dashboard/instructor/lesson"           icon={icons.lessons}    label="Lessons"    />
+        <NavItem to="/dashboard/instructor/attendance"       icon={icons.attendance} label="Attendance" />
+        <NavItem to="/dashboard/instructor/vehicle"          icon={icons.vehicle}    label="Vehicle"    />
 
         <SectionLabel text="FINANCE" />
-        <NavItem                                          icon={icons.payments}    label="Payments"    badgeColor="amber" />
-        <NavItem           icon={icons.reports}     label="Analytics"   />
-        <NavItem            icon={icons.invoices}    label="Reports"     />
+        <NavItem to="/dashboard/instructor/analytics"        icon={icons.reports}    label="Analytics"  />
 
         <SectionLabel text="ENGAGE" />
-        <NavItem            icon={icons.messages}    label="Template"    />
-        <NavItem   icon={icons.messages}    label="Messages"    badgeColor="red" />
-        <NavItem            icon={icons.feedback}    label="Feedback"    />
-
-        <SectionLabel text="SYSTEM" />
-        <NavItem            icon={icons.settings}    label="Settings"    />
+        <NavItem to="/dashboard/instructor/template"         icon={icons.messages}   label="Template"   />
+        <NavItem to="/dashboard/instructor/messages"         icon={icons.messages}   label="Messages"   badgeColor="red" />
+        <NavItem to="/dashboard/instructor/feedback"         icon={icons.feedback}   label="Feedback"   />
+        
       </nav>
 
-      {/* ── instructor profile footer ── */}
-      <div className="p-3 border-t border-white/[0.06]">
-        <div
-          className="flex items-center gap-2.5 bg-[#0F1A2E] border border-white/[0.07]
-            rounded-xl px-3 py-2.5 cursor-pointer hover:border-white/[0.12] transition-colors"
+      {/* ── Profile footer ── */}
+      <div className="p-3 border-t border-white/[0.06] relative">
+        {/* Profile popup menu — rendered above the trigger */}
+        {menuOpen && (
+          <ProfileMenu
+            instructor={instructor}
+            fullName={fullName}
+            initials={initials}
+            pictureUrl={picture_profile_url}
+            onClose={() => setMenuOpen(false)}
+            menuRef={menuRef}
+          />
+        )}
+
+        {/* Trigger button */}
+        <button
+          ref={triggerRef}
+          onClick={() => setMenuOpen((v) => !v)}
+          className={[
+            'w-full flex items-center gap-2.5 bg-[#0F1A2E] border rounded-xl px-3 py-2.5',
+            'cursor-pointer transition-all duration-200 text-left',
+            menuOpen
+              ? 'border-blue-500/40 bg-blue-600/10'
+              : 'border-white/[0.07] hover:border-white/[0.14] hover:bg-white/[0.03]',
+          ].join(' ')}
         >
           {loading ? (
             <>
@@ -236,46 +347,35 @@ const Sidebar = () => {
             </>
           ) : (
             <>
-      {picture_profile_url ? (
-        <img
-          src={picture_profile_url}
-          alt={fullName}
-          className="w-7 h-7 rounded-full object-cover"
-          onError={(e) => {
-            console.log("Image failed:", e.target.src);
-          }}
-        />
-      ) : (
-        <div className="w-7 h-7 rounded-full bg-violet-700 flex items-center justify-center text-[10px] font-bold text-white">
-          {initials}
-        </div>
-      )}
-                
-            
+              {picture_profile_url ? (
+                <img
+                  src={picture_profile_url}
+                  alt={fullName}
+                  className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                />
+              ) : (
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-600 to-blue-600
+                  flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
+                  {initials}
+                </div>
+              )}
               <div className="min-w-0 flex-1">
                 <div className="text-[12px] font-semibold text-white font-dm truncate">
                   {fullName || '—'}
                 </div>
                 <div className="text-[10px] text-white/30 font-dm">School Instructor</div>
               </div>
+
+              {/* Chevron — rotates when open */}
+              <svg
+                width="12" height="12" viewBox="0 0 12 12" fill="none"
+                className={`ml-auto text-white/30 flex-shrink-0 transition-transform duration-200 ${menuOpen ? 'rotate-180 text-blue-400' : ''}`}
+              >
+                <path d="M3 5l3 3 3-3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </>
           )}
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
-            className="ml-auto text-white/25 flex-shrink-0"
-          >
-            <path
-              d="M3 5l3 3 3-3"
-              stroke="currentColor"
-              strokeWidth="1.3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
+        </button>
 
         {error && !loading && (
           <p className="mt-1.5 text-[9px] text-red-400/50 font-dm text-center">
