@@ -1,7 +1,7 @@
 // src/pages/AutomatedMessage/useautomatedmessage.js
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { automatedMessageAPI, communicationTemplateAPI } from './Automatedmessageapi';
-import { filterMessages, sortMessages } from './automatedmessageutils';
+import { filterMessages, sortMessages } from './Automatedmessageutils';
 
 // ─── Generic async hook ───────────────────────────────────────
 // API functions already return r.data, so no .data unwrapping here.
