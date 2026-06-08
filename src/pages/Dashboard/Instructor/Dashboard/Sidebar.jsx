@@ -293,21 +293,20 @@ const Sidebar = () => {
 
       {/* ── Nav ── */}
       <nav className="flex-1 pt-1">
-        <SectionLabel text="MAIN" />
-        <NavItem to="/dashboard/instructor"                  icon={icons.grid}       label="Dashboard"  />
-        <NavItem to="/dashboard/instructor/students"         icon={icons.students}   label="Students"   />
-        <NavItem to="/dashboard/instructor/schedule"         icon={icons.calendar}   label="Schedule"   />
-        <NavItem to="/dashboard/instructor/lesson"           icon={icons.lessons}    label="Lessons"    />
-        <NavItem to="/dashboard/instructor/attendance"       icon={icons.attendance} label="Attendance" />
-        <NavItem to="/dashboard/instructor/vehicle"          icon={icons.vehicle}    label="Vehicle"    />
+      <NavItem to="/dashboard/instructor"                    icon={icons.grid}        label="Dashboard"   />
+        <NavItem to={'/dashboard/instructor/students'}          icon={icons.students}    label="Students"    />
+        <NavItem to={'/dashboard/instructor/schedule'}            icon={icons.calendar}    label="Schedule"    />
+        <NavItem to={'/dashboard/instructor/lesson'}             icon={icons.lessons}     label="Lessons"     />
+        <NavItem to={'/dashboard/instructor/attendance'}   icon={icons.attendance}  label="Attendance"  />
+        <NavItem to={'/dashboard/instructor/vehicle'}            icon={icons.vehicle}     label="Vehicle"     />
 
         <SectionLabel text="FINANCE" />
-        <NavItem to="/dashboard/instructor/analytics"        icon={icons.reports}    label="Analytics"  />
+        <NavItem to={'/dashboard/instructor/analytics'}          icon={icons.reports}     label="Analytics"   />
 
         <SectionLabel text="ENGAGE" />
-        <NavItem to="/dashboard/instructor/template"         icon={icons.messages}   label="Template"   />
-        <NavItem to="/dashboard/instructor/messages"         icon={icons.messages}   label="Messages"   badgeColor="red" />
-        <NavItem to="/dashboard/instructor/feedback"         icon={icons.feedback}   label="Feedback"   />
+        <NavItem to={'/dashboard/instructor/template'}            icon={icons.messages}    label="Template"    />
+        <NavItem to={'/dashboard/instructor/messages'}   icon={icons.messages}    label="Messages"    badgeColor="red" />
+        <NavItem to={'/dashboard/instructor/feedback'}           icon={icons.feedback}    label="Feedback"    />
         
       </nav>
 
