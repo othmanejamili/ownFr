@@ -34,6 +34,7 @@ import InstructorAnalyticsPage from '../pages/Dashboard/Instructor/Analytics/Ana
 import InstructorAutomatedMessagePage from '../pages/Dashboard/Instructor/Message/Automatedmessagepage';
 import InstructorCommunicationTemplatePage from '../pages/Dashboard/Instructor/Template/Communicationtemplatepage';
 import InstructorFeedbackPage from '../pages/Dashboard/Instructor/Feedback/Feedbackpage';
+import StudentDashboard  from '../pages/Dashboard/Student/Dashboard/StudentDashboard';
 function App() {
   return (
     <Router>
@@ -50,7 +51,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         
-        {/* Protected routes */}
+{/*########################## Protected Routes For Admin ##########################*/}
         <Route
           path="/dashboard/admin"
           element={
@@ -59,7 +60,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+{/*########################## Protected Routes For Ownr ##########################*/}
         <Route
         path="/dashboard/owner"
         element={
@@ -185,7 +186,7 @@ function App() {
         }
         />
 
-
+{/*########################## Protected Routes For Instructor ##########################*/}
       <Route
         path='/dashboard/instructor'
         element={
@@ -272,6 +273,17 @@ function App() {
         element={
           <ProtectedRoute requiredRole="I">
             <InstructorFeedbackPage />
+          </ProtectedRoute>
+        }
+        /> 
+
+{/*########################## Protected Routes For Student ##########################*/}
+
+      <Route
+        path='/dashboard/student'
+        element={
+          <ProtectedRoute requiredRole="S">
+            <StudentDashboard />
           </ProtectedRoute>
         }
         /> 
