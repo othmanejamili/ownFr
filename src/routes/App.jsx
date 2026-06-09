@@ -159,7 +159,7 @@ function App() {
         />
 
       <Route
-        path='/dashboard/owner/raposrts'
+        path='/dashboard/owner/raports'
         element={
           <ProtectedRoute requiredRole="A" requireStaff={false}>
             <ReportsPage />

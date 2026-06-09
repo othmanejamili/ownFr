@@ -343,18 +343,18 @@ const Sidebar = () => {
         <NavItem to="/dashboard/owner/students"    icon={icons.students}    label="Students"    />
         <NavItem to="/dashboard/owner/instructors" icon={icons.instructors} label="Instructors" />
         <NavItem to="/dashboard/owner/schedule"    icon={icons.calendar}    label="Schedule"    />
-        <NavItem to="/dashboard/owner/lesson"      icon={icons.lessons}     label="Lessons"     />
+        <NavItem to="/dashboard/owner/lessons"      icon={icons.lessons}     label="Lessons"     />
         <NavItem to="/dashboard/owner/attendance"  icon={icons.attendance}  label="Attendance"  />
         <NavItem to="/dashboard/owner/vehicle"     icon={icons.vehicle}     label="Vehicle"     />
 
         <SectionLabel text="FINANCE" />
         <NavItem to="/dashboard/owner/payments"    icon={icons.payments}    label="Payments"    />
-        <NavItem to="/dashboard/owner/invoices"    icon={icons.invoices}    label="Invoices"    />
+        <NavItem to="/dashboard/owner/raports"    icon={icons.invoices}    label="raports"    />
         <NavItem to="/dashboard/owner/analytics"   icon={icons.reports}     label="Analytics"   />
 
         <SectionLabel text="ENGAGE" />
         <NavItem to="/dashboard/owner/template"    icon={icons.messages}    label="Template"    />
-        <NavItem to="/dashboard/owner/messages"    icon={icons.messages}    label="Messages"    badgeColor="red" />
+        <NavItem to="/dashboard/owner/automated-message"    icon={icons.messages}    label="Messages"    badgeColor="red" />
         <NavItem to="/dashboard/owner/feedback"    icon={icons.feedback}    label="Feedback"    />
 
         <SectionLabel text="SYSTEM" />
