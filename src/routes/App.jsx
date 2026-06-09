@@ -35,6 +35,7 @@ import InstructorAutomatedMessagePage from '../pages/Dashboard/Instructor/Messag
 import InstructorCommunicationTemplatePage from '../pages/Dashboard/Instructor/Template/Communicationtemplatepage';
 import InstructorFeedbackPage from '../pages/Dashboard/Instructor/Feedback/Feedbackpage';
 import StudentDashboard  from '../pages/Dashboard/Student/Dashboard/StudentDashboard';
+import StudentSchedulePage from '../pages/Dashboard/Student/Schedule/Schedulepage';
 function App() {
   return (
     <Router>
@@ -284,6 +285,15 @@ function App() {
         element={
           <ProtectedRoute requiredRole="S">
             <StudentDashboard />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/student/schedule'
+        element={
+          <ProtectedRoute requiredRole="S">
+            <StudentSchedulePage />
           </ProtectedRoute>
         }
         /> 

@@ -297,7 +297,7 @@ const Sidebar = () => {
       <nav className="flex-1 pt-1">
         <SectionLabel text="MAIN" />
         <NavItem to="/dashboard/student"              icon={icons.grid}         label="Dashboard"    />
-        <NavItem      icon={icons.calendar}     label="Schedule"     />
+        <NavItem to="/dashboard/student/schedule"      icon={icons.calendar}     label="Schedule"     />
         <NavItem       icon={icons.lessons}      label="My Lessons"   />
         <NavItem        icon={icons.theory}       label="Theory"       />
         <NavItem     icon={icons.progress}     label="Progress"     />
