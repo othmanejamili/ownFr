@@ -36,6 +36,7 @@ import InstructorCommunicationTemplatePage from '../pages/Dashboard/Instructor/T
 import InstructorFeedbackPage from '../pages/Dashboard/Instructor/Feedback/Feedbackpage';
 import StudentDashboard  from '../pages/Dashboard/Student/Dashboard/StudentDashboard';
 import StudentSchedulePage from '../pages/Dashboard/Student/Schedule/Schedulepage';
+import LessonsPageStudent from '../pages/Dashboard/Student/Lesson/LessonsPage';
 function App() {
   return (
     <Router>
@@ -294,6 +295,15 @@ function App() {
         element={
           <ProtectedRoute requiredRole="S">
             <StudentSchedulePage />
+          </ProtectedRoute>
+        }
+        />
+
+      <Route
+        path='/dashboard/student/lessons'
+        element={
+          <ProtectedRoute requiredRole="S">
+            <LessonsPageStudent />
           </ProtectedRoute>
         }
         /> 

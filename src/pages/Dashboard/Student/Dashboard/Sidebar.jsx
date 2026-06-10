@@ -298,7 +298,7 @@ const Sidebar = () => {
         <SectionLabel text="MAIN" />
         <NavItem to="/dashboard/student"              icon={icons.grid}         label="Dashboard"    />
         <NavItem to="/dashboard/student/schedule"      icon={icons.calendar}     label="Schedule"     />
-        <NavItem       icon={icons.lessons}      label="My Lessons"   />
+        <NavItem to="/dashboard/student/lessons"       icon={icons.lessons}      label="My Lessons"   />
         <NavItem        icon={icons.theory}       label="Theory"       />
         <NavItem     icon={icons.progress}     label="Progress"     />
         <NavItem         icon={icons.exams}        label="Exams"        />
