@@ -300,7 +300,7 @@ const Sidebar = () => {
         <NavItem to="/dashboard/student/schedule"      icon={icons.calendar}     label="Schedule"     />
         <NavItem to="/dashboard/student/lessons"       icon={icons.lessons}      label="My Lessons"   />
         <NavItem        icon={icons.theory}       label="Theory"       />
-        <NavItem     icon={icons.progress}     label="Progress"     />
+        <NavItem to="/dashboard/student/progress"     icon={icons.progress}     label="Progress"     />
         <NavItem         icon={icons.exams}        label="Exams"        />
 
         <SectionLabel text="ACCOUNT" />
