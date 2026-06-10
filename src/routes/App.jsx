@@ -38,6 +38,7 @@ import StudentDashboard  from '../pages/Dashboard/Student/Dashboard/StudentDashb
 import StudentSchedulePage from '../pages/Dashboard/Student/Schedule/Schedulepage';
 import LessonsPageStudent from '../pages/Dashboard/Student/Lesson/LessonsPage';
 import ProgressPage from '../pages/Dashboard/Student/Progress/StudentProgresspage';
+import ProfilePage from '../pages/Dashboard/Student/Profile/StudentProfile';
 function App() {
   return (
     <Router>
@@ -314,6 +315,15 @@ function App() {
         element={
           <ProtectedRoute requiredRole="S">
             <ProgressPage />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/student/my-profile'
+        element={
+          <ProtectedRoute requiredRole="S">
+            <ProfilePage />
           </ProtectedRoute>
         }
         /> 

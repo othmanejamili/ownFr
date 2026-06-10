@@ -115,8 +115,9 @@ const ProfileMenu = ({ student, fullName, initials, pictureUrl, onClose, menuRef
       icon: icons.profile,
       label: 'My Profile',
       sub: 'View & edit your info',
+      onClick: () => { navigate('/dashboard/student/my-profile'); onClose(); },
     },
-    {
+    { 
       icon: icons.settings,
       label: 'Settings',
       sub: 'Preferences & security',
@@ -299,13 +300,13 @@ const Sidebar = () => {
         <NavItem to="/dashboard/student"              icon={icons.grid}         label="Dashboard"    />
         <NavItem to="/dashboard/student/schedule"      icon={icons.calendar}     label="Schedule"     />
         <NavItem to="/dashboard/student/lessons"       icon={icons.lessons}      label="My Lessons"   />
-        <NavItem        icon={icons.theory}       label="Theory"       />
         <NavItem to="/dashboard/student/progress"     icon={icons.progress}     label="Progress"     />
         <NavItem         icon={icons.exams}        label="Exams"        />
 
         <SectionLabel text="ACCOUNT" />
         <NavItem     icon={icons.payments}     label="Payments"     />
         <NavItem  icon={icons.achievements} label="Achievements" />
+        <NavItem to="/dashboard/student/my-profile"   icon={icons.profile}     label="My profile" />
 
         <SectionLabel text="SUPPORT" />
         <NavItem      icon={icons.messages}     label="Messages"     />
