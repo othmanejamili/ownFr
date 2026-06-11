@@ -309,7 +309,7 @@ const Sidebar = () => {
         <NavItem to="/dashboard/student/my-profile"   icon={icons.profile}     label="My profile" />
 
         <SectionLabel text="SUPPORT" />
-        <NavItem      icon={icons.messages}     label="Messages"     />
+        <NavItem to="/dashboard/student/messages"      icon={icons.messages}     label="Messages"     />
         <NavItem      icon={icons.feedback}     label="Feedback"     />
         <NavItem         icon={icons.help}         label="Help"         />
 

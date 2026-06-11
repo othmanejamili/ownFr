@@ -39,6 +39,7 @@ import StudentSchedulePage from '../pages/Dashboard/Student/Schedule/Schedulepag
 import LessonsPageStudent from '../pages/Dashboard/Student/Lesson/LessonsPage';
 import ProgressPage from '../pages/Dashboard/Student/Progress/StudentProgresspage';
 import ProfilePage from '../pages/Dashboard/Student/Profile/StudentProfile';
+import StudentMessagesPage from '../pages/Dashboard/Student/Message/Automatedmessagepage';
 function App() {
   return (
     <Router>
@@ -324,6 +325,15 @@ function App() {
         element={
           <ProtectedRoute requiredRole="S">
             <ProfilePage />
+          </ProtectedRoute>
+        }
+        /> 
+
+      <Route
+        path='/dashboard/student/messages'
+        element={
+          <ProtectedRoute requiredRole="S">
+            <StudentMessagesPage />
           </ProtectedRoute>
         }
         /> 
