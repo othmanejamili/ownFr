@@ -310,7 +310,7 @@ const Sidebar = () => {
 
         <SectionLabel text="SUPPORT" />
         <NavItem to="/dashboard/student/messages"      icon={icons.messages}     label="Messages"     />
-        <NavItem      icon={icons.feedback}     label="Feedback"     />
+        <NavItem to="/dashboard/student/feedback"      icon={icons.feedback}     label="Feedback"     />
         <NavItem         icon={icons.help}         label="Help"         />
 
         <SectionLabel text="SYSTEM" />
