@@ -69,6 +69,7 @@ const icons = {
   profile:     <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="4.5" r="2.8" stroke="currentColor" strokeWidth="1.2"/><path d="M1.5 13c0-3 2.5-4.5 5.5-4.5S12 10 12 13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
   logout:      <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M5 2H2a1 1 0 00-1 1v8a1 1 0 001 1h3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/><path d="M9.5 9.5L13 7l-3.5-2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M13 7H5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
   help:        <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.2"/><path d="M5.5 5.5a1.5 1.5 0 012.8.7c0 1-1.3 1.3-1.3 2.3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/><circle cx="7" cy="10.5" r="0.6" fill="currentColor"/></svg>,
+  vehicle:     <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1.5" y="5" width="11" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.2"/><path d="M3.5 10v1.5M10.5 10v1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/><circle cx="4.5" cy="10" r="1.2" stroke="currentColor" strokeWidth="1"/><circle cx="9.5" cy="10" r="1.2" stroke="currentColor" strokeWidth="1"/><path d="M4.5 5l1-2.5h3l1 2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
   feedback:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M7 1l1.4 4h4.1L9.1 7.4l1.4 4.2L7 8.8 3.5 11.6l1.4-4.2L1.5 5h4.1z" stroke="currentColor" strokeWidth="1.1"/></svg>,
 };
 
@@ -301,10 +302,11 @@ const Sidebar = () => {
         <NavItem to="/dashboard/student/schedule"      icon={icons.calendar}     label="Schedule"     />
         <NavItem to="/dashboard/student/lessons"       icon={icons.lessons}      label="My Lessons"   />
         <NavItem to="/dashboard/student/progress"     icon={icons.progress}     label="Progress"     />
+        <NavItem to={'/dashboard/student/vehicle'}            icon={icons.vehicle}     label="Vehicle"     />
 
         <SectionLabel text="ACCOUNT" />
         <NavItem to="/dashboard/student/my-profile"   icon={icons.profile}     label="My profile" />
-        
+
         <SectionLabel text="SUPPORT" />
         <NavItem to="/dashboard/student/messages"      icon={icons.messages}     label="Messages"     />
         <NavItem to="/dashboard/student/feedback"      icon={icons.feedback}     label="Feedback"     />
