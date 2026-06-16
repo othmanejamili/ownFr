@@ -114,8 +114,14 @@ const ProfileMenu = ({ instructor, fullName, initials, pictureUrl, onClose, menu
   };
 
   const menuItems = [
-    {
-    },
+    
+      {
+        icon: icons.profile,
+        label: 'My Profile',
+        sub: 'View & edit your info',
+        onClick: () => { navigate('/dashboard/student/my-profile'); onClose(); },
+      },
+    
   ];
 
   return (
@@ -158,8 +164,22 @@ const ProfileMenu = ({ instructor, fullName, initials, pictureUrl, onClose, menu
       {/* Menu items */}
       <div className="py-1.5">
         {menuItems.map((item) => (
-          <>
-          </>
+          <button
+            key={item.label}
+            onClick={item.onClick}
+            className="w-full flex items-center gap-3 px-4 py-2.5
+              hover:bg-white/[0.05] transition-colors group text-left"
+          >
+            <span className="w-3.5 h-3.5 flex-shrink-0 text-white/35 group-hover:text-white/60 transition-colors">
+              {item.icon}
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="text-[11.5px] font-medium text-white/70 group-hover:text-white/90 font-dm transition-colors">
+                {item.label}
+              </div>
+              <div className="text-[10px] text-white/25 font-dm">{item.sub}</div>
+            </div>
+          </button>
         ))}
       </div>
 
@@ -308,6 +328,9 @@ const Sidebar = () => {
         <NavItem to={'/dashboard/instructor/template'}            icon={icons.messages}    label="Template"    />
         <NavItem to={'/dashboard/instructor/messages'}   icon={icons.messages}    label="Messages"    badgeColor="red" />
         <NavItem to={'/dashboard/instructor/feedback'}           icon={icons.feedback}    label="Feedback"    />
+
+        <SectionLabel text="ACCOUNT" />
+        <NavItem to="/dashboard/instructor/my-profile"   icon={icons.profile}     label="My profile" />
 
       </nav>
 
