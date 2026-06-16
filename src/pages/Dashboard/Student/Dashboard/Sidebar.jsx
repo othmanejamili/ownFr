@@ -55,7 +55,7 @@ const SectionLabel = ({ text }) => (
   </div>
 );
 
-const icons = {
+const icons = { 
   grid:        <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1" y="1" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><rect x="8" y="1" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><rect x="1" y="8" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><rect x="8" y="8" width="5" height="5" rx="1.2" stroke="currentColor" strokeWidth="1.3"/></svg>,
   calendar:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1" y="2" width="12" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M1 5h12M4 1v2M10 1v2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
   lessons:     <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M2 2h8v8H2z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M10 4l2-1v7l-2 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 5h4M4 7h3" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/></svg>,
@@ -64,6 +64,7 @@ const icons = {
   exams:       <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1.5" y="1" width="9" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.2"/><path d="M3.5 4h5M3.5 6.5h5M3.5 9h3" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/><path d="M10 8l1.5 1.5L13 8" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round"/></svg>,
   payments:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><rect x="1" y="3" width="12" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.2"/><path d="M1 6h12" stroke="currentColor" strokeWidth="1.2"/><rect x="3" y="8" width="3" height="1.5" rx="0.5" fill="currentColor"/></svg>,
   messages:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M12 2H2a1 1 0 00-1 1v6a1 1 0 001 1h3l2 2.5L9 10h3a1 1 0 001-1V3a1 1 0 00-1-1z" stroke="currentColor" strokeWidth="1.2"/></svg>,
+  attendance:  <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.2"/><path d="M7 3v4l2.5 2.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
   achievements:<svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><path d="M7 1l1.4 4h4.1L9.1 7.4l1.4 4.2L7 8.8 3.5 11.6l1.4-4.2L1.5 5h4.1z" stroke="currentColor" strokeWidth="1.1"/></svg>,
   settings:    <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="7" r="2" stroke="currentColor" strokeWidth="1.2"/><path d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M2.5 2.5l1 1M10.5 10.5l1 1M11.5 2.5l-1 1M3.5 10.5l-1 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
   profile:     <svg viewBox="0 0 14 14" fill="none" className="w-full h-full"><circle cx="7" cy="4.5" r="2.8" stroke="currentColor" strokeWidth="1.2"/><path d="M1.5 13c0-3 2.5-4.5 5.5-4.5S12 10 12 13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>,
@@ -302,7 +303,8 @@ const Sidebar = () => {
         <NavItem to="/dashboard/student/schedule"      icon={icons.calendar}     label="Schedule"     />
         <NavItem to="/dashboard/student/lessons"       icon={icons.lessons}      label="My Lessons"   />
         <NavItem to="/dashboard/student/progress"     icon={icons.progress}     label="Progress"     />
-        <NavItem to={'/dashboard/student/vehicle'}            icon={icons.vehicle}     label="Vehicle"     />
+        <NavItem to="/dashboard/student/attendance"  icon={icons.attendance}  label="Attendance"  />
+        <NavItem to="/dashboard/student/vehicle"            icon={icons.vehicle}     label="Vehicle"     />
 
         <SectionLabel text="ACCOUNT" />
         <NavItem to="/dashboard/student/my-profile"   icon={icons.profile}     label="My profile" />
