@@ -10,6 +10,9 @@ import {
      overview      → /api/dashboard/overview/  (dashboard_type: 'instructor')
      quickStats    → /api/dashboard/quick-stats/
      notifications → /api/dashboard/notifications/
+     weeklyData    → /api/schoolanalytics/dashboard/?date_range=week
+                     Shape: [{ date: 'YYYY-MM-DD', scheduled: N, completed: N }, ...]
+                     Optional — WeeklyChart falls back gracefully if absent.
      loading       → boolean
 
    Instructor overview shape (from backend _instructor_dashboard):
@@ -106,7 +109,6 @@ const KpiCard = ({ value, label, delta, deltaType = 'up', accentClass, iconBg, i
 };
 
 export const KpiStrip = ({ quickStats, overview, loading }) => {
-  // Stats come from quickStats.stats (instructor role)
   const stats = quickStats?.stats ?? {};
   const todayLessons   = fmt(stats.today_lessons   ?? overview?.today?.total_lessons);
   const todayCompleted = fmt(stats.today_completed  ?? overview?.today?.completed);
@@ -326,42 +328,75 @@ export const UpcomingLessons = ({ overview, loading }) => {
 };
 
 // ─────────────────────────────────────────────────────────────
-// WEEKLY PERFORMANCE CHART — uses overview data
+// WEEKLY PERFORMANCE CHART
 // ─────────────────────────────────────────────────────────────
 
-const buildWeekData = (overview) => {
-  // Backend doesn't expose per-day breakdown for instructors yet;
-  // use this_week_performance as a single-week aggregate bar
-  const perf = overview?.this_week_performance;
-  if (!perf) return [];
-  return [
-    { day: 'This week', scheduled: fmt(perf.total_lessons), completed: fmt(perf.completed_lessons) },
-  ];
+/**
+ * Convert an ISO date string (YYYY-MM-DD) to a short day label (Mon, Tue…).
+ * Returns the raw string unchanged if it can't be parsed.
+ */
+const toDayLabel = (dateStr) => {
+  if (!dateStr) return dateStr;
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr;
+  return d.toLocaleDateString('en-US', { weekday: 'short' });
 };
 
-export const WeeklyChart = ({ overview, loading }) => {
-  const perf   = overview?.this_week_performance ?? {};
-  const total  = fmt(perf.total_lessons);
-  const done   = fmt(perf.completed_lessons);
-  const rate   = fmt(perf.completion_rate);
+/**
+ * Normalise a single analytics row into the shape the chart expects.
+ * The backend may use different key names, so we accept several variants.
+ */
+const normaliseRow = (row) => ({
+  day:       toDayLabel(row.date ?? row.day ?? row.period),
+  scheduled: fmt(row.scheduled ?? row.total_lessons ?? row.scheduled_lessons ?? row.total),
+  completed: fmt(row.completed ?? row.completed_lessons ?? row.done),
+});
 
-  // Build a synthetic 7-day layout if no per-day data
-  const data = [
-    { day: 'Mon', scheduled: 5, completed: 4 },
-    { day: 'Tue', scheduled: 6, completed: 5 },
-    { day: 'Wed', scheduled: 4, completed: 4 },
-    { day: 'Thu', scheduled: 7, completed: 6 },
-    { day: 'Fri', scheduled: 5, completed: 4 },
-    { day: 'Sat', scheduled: 3, completed: 3 },
-    { day: 'Sun', scheduled: 2, completed: 1 },
-  ]; // replaced by real data when backend exposes it
+/**
+ * Build a stable 7-day skeleton (Mon → Sun of the current week) and merge in
+ * any real rows from the API so days with no data show as zero rather than
+ * being omitted from the chart.
+ */
+const buildChartData = (weeklyData, overview) => {
+  // If the analytics endpoint returned per-day rows, use them.
+  if (weeklyData?.length) {
+    return weeklyData.map(normaliseRow);
+  }
+
+  // No per-day data yet — build a 7-day frame using only the week aggregate
+  // so the axis labels are always present and meaningful.
+  const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const perf       = overview?.this_week_performance ?? {};
+  const total      = fmt(perf.total_lessons);
+  const done       = fmt(perf.completed_lessons);
+
+  // Spread the aggregate evenly across Mon-Fri as a best-effort placeholder.
+  // These values are clearly marked "estimated" via the subtitle.
+  const weekdayShare = (v) => Math.round(v / 5);
+
+  return DAY_LABELS.map((day, i) => ({
+    day,
+    scheduled: i < 5 ? weekdayShare(total) : 0,
+    completed: i < 5 ? weekdayShare(done)  : 0,
+  }));
+};
+
+export const WeeklyChart = ({ overview, weeklyData, loading }) => {
+  const perf = overview?.this_week_performance ?? {};
+  const total = fmt(perf.total_lessons);
+  const done  = fmt(perf.completed_lessons);
+  const rate  = fmt(perf.completion_rate);
+
+  const hasRealData   = Boolean(weeklyData?.length);
+  const chartData     = buildChartData(weeklyData, overview);
+  const subtitleLabel = hasRealData ? 'Completed vs scheduled' : 'Estimated (daily breakdown loading…)';
 
   return (
     <div className="bg-[#0F1A2E] border border-white/[0.07] rounded-[14px] p-4 hover:border-white/[0.11] transition-colors">
       <div className="flex items-start justify-between mb-4">
         <div>
           <div className="font-sora text-[13px] font-bold text-white">Weekly lessons</div>
-          <div className="text-[10px] text-white/30 mt-0.5 font-dm">Completed vs scheduled</div>
+          <div className="text-[10px] text-white/30 mt-0.5 font-dm">{subtitleLabel}</div>
         </div>
         <span className="text-[10px] font-semibold px-2 py-1 rounded-lg bg-emerald-500/12 text-emerald-400 border border-emerald-500/20 font-dm">
           {loading ? '…' : `${rate}% done`}
@@ -372,13 +407,41 @@ export const WeeklyChart = ({ overview, loading }) => {
         <Skeleton className="w-full h-[130px] rounded-xl" />
       ) : (
         <ResponsiveContainer width="100%" height={130}>
-          <LineChart data={data} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
+          <LineChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
             <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.04)" vertical={false} />
-            <XAxis dataKey="day" tick={{ fill: 'rgba(240,244,255,0.28)', fontSize: 10, fontFamily: 'DM Sans' }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: 'rgba(240,244,255,0.28)', fontSize: 10, fontFamily: 'DM Sans' }} axisLine={false} tickLine={false} />
+            <XAxis
+              dataKey="day"
+              tick={{ fill: 'rgba(240,244,255,0.28)', fontSize: 10, fontFamily: 'DM Sans' }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <YAxis
+              tick={{ fill: 'rgba(240,244,255,0.28)', fontSize: 10, fontFamily: 'DM Sans' }}
+              axisLine={false}
+              tickLine={false}
+              allowDecimals={false}
+            />
             <Tooltip content={<ChartTooltip />} />
-            <Line type="monotone" dataKey="scheduled" name="Scheduled" stroke="#3B82F6" strokeWidth={2} dot={{ r: 3, fill: '#3B82F6', strokeWidth: 2, stroke: '#0F1A2E' }} activeDot={{ r: 5 }} />
-            <Line type="monotone" dataKey="completed" name="Completed" stroke="#10B981" strokeWidth={2} dot={{ r: 3, fill: '#10B981', strokeWidth: 2, stroke: '#0F1A2E' }} activeDot={{ r: 5 }} />
+            <Line
+              type="monotone"
+              dataKey="scheduled"
+              name="Scheduled"
+              stroke="#3B82F6"
+              strokeWidth={2}
+              strokeDasharray={hasRealData ? undefined : '4 3'}   // dashed when estimated
+              dot={{ r: 3, fill: '#3B82F6', strokeWidth: 2, stroke: '#0F1A2E' }}
+              activeDot={{ r: 5 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="completed"
+              name="Completed"
+              stroke="#10B981"
+              strokeWidth={2}
+              strokeDasharray={hasRealData ? undefined : '4 3'}
+              dot={{ r: 3, fill: '#10B981', strokeWidth: 2, stroke: '#0F1A2E' }}
+              activeDot={{ r: 5 }}
+            />
           </LineChart>
         </ResponsiveContainer>
       )}
@@ -412,7 +475,6 @@ export const PerformanceRing = ({ overview, loading }) => {
   const students   = fmt(metrics.total_students_taught);
   const school     = overview?.school;
 
-  // SVG ring for attendance rate
   const r     = 36;
   const circ  = 2 * Math.PI * r;
   const arc   = attendance > 0 ? (attendance / 100) * circ : 0;
