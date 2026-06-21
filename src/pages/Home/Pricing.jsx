@@ -297,11 +297,11 @@ const ComparisonTable = () => (
 );
 
 const FAQ_ITEMS = [
-  { q: 'Can I try DriveIQ before paying?', a: 'Yes — every plan includes a full 14-day free trial with no credit card required. You get complete access to all features in your chosen plan. No limitations, no surprises.' },
+  { q: 'Can I try DriveOJ before paying?', a: 'Yes — every plan includes a full 14-day free trial with no credit card required. You get complete access to all features in your chosen plan. No limitations, no surprises.' },
   { q: 'Can I change my plan at any time?', a: 'Absolutely. You can upgrade or downgrade at any time. Upgrades take effect immediately; downgrades apply at the start of your next billing cycle.' },
   { q: 'How does the annual discount work?', a: 'When you switch to annual billing, you get 25% off the monthly price — paid as one annual charge.' },
   { q: 'What happens if I exceed my student limit?', a: "We'll notify you when you're approaching your limit and make it easy to upgrade. Your data is never at risk." },
-  { q: 'Is my data safe with DriveIQ?', a: 'Yes. All data is encrypted in transit (TLS 1.3) and at rest (AES-256). We perform daily backups and comply with local data protection regulations.' },
+  { q: 'Is my data safe with DriveOJ?', a: 'Yes. All data is encrypted in transit (TLS 1.3) and at rest (AES-256). We perform daily backups and comply with local data protection regulations.' },
   { q: 'Do you offer discounts for new schools?', a: 'We offer special onboarding pricing for new driving schools in their first year. Contact our team to learn more.' },
 ];
 

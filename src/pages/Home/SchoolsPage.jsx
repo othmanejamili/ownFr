@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import NavBar from '../Home/NavBar';
 import Footer from './Footer';
 /*
- * DriveIQ — Schools.jsx  (/schools)
+ * DriveOJ — Schools.jsx  (/schools)
  * Stack  : React 18 + Tailwind CSS v3 + React Router v6
  * Fonts  : Sora + DM Sans (same as app-wide)
  *
@@ -104,7 +104,7 @@ const SCHOOLS = [
     plan: 'Enterprise', rank: 1, color: 'bg-violet-700',
     tags: ['Top rated', 'School of Month'],
     featured: true,
-    ownerQuote: '"DriveIQ made us the #1 school in Casablanca. Our admin time dropped from 3 hours to 20 minutes a week."',
+    ownerQuote: '"DriveOJ made us the #1 school in Casablanca. Our admin time dropped from 3 hours to 20 minutes a week."',
     ownerName: 'Karim Alaoui',
     yearsOnPlatform: 3,
   },
@@ -238,7 +238,7 @@ const FeaturedCard = ({ school }) => (
         <PinIcon className="text-white/30" />
         {school.city}, Morocco
         <span className="mx-2 text-white/15">·</span>
-        <span className="text-white/35">{school.yearsOnPlatform} years on DriveIQ</span>
+        <span className="text-white/35">{school.yearsOnPlatform} years on DriveOJ</span>
       </div>
       <div className="flex gap-5 flex-wrap">
         {[
@@ -408,7 +408,7 @@ const AddSchoolCard = () => {
         Add your school
       </h3>
       <p className="text-[12px] text-white/30 leading-relaxed max-w-[160px] mb-5 font-dm">
-        Join 248 schools already running smarter on DriveIQ
+        Join 248 schools already running smarter on DriveOJ
       </p>
       <Link to="/register"
         className="px-4 py-2 bg-blue-600/20 border border-blue-500/40 rounded-lg
@@ -503,7 +503,7 @@ const StatsBar = () => (
     <div className="grid grid-cols-2 sm:grid-cols-4 bg-white/[0.03]
       border border-white/[0.07] rounded-2xl overflow-hidden">
       {[
-        { val: '248',   lbl: 'Schools on DriveIQ',   delta: '↑ +7 this week' },
+        { val: '248',   lbl: 'Schools on DriveOJ',   delta: '↑ +7 this week' },
         { val: '1,247', lbl: 'Active students',       delta: '↑ +84 this month' },
         { val: '91%',   lbl: 'Average pass rate',     delta: '↑ Best in Morocco' },
         { val: '4.9',   lbl: 'Platform rating',       delta: '↑ 400+ reviews' },
@@ -548,7 +548,7 @@ const CtaStrip = () => (
         </span>
       </h2>
       <p className="text-[15px] text-white/40 mb-10 leading-relaxed max-w-lg mx-auto font-dm">
-        248 schools already run smarter on DriveIQ. Start your 14-day free trial and see
+        248 schools already run smarter on DriveOJ. Start your 14-day free trial and see
         the difference in your first week.
       </p>
       <div className="flex gap-3 justify-center items-center flex-wrap mb-7">
@@ -636,7 +636,7 @@ const SchoolsPage = () => {
           </h1>
 
           <p className="text-[15px] text-white/45 max-w-xl mx-auto mb-10 leading-[1.75] font-dm">
-            Real driving schools. Real results. See how DriveIQ is transforming auto-écoles
+            Real driving schools. Real results. See how DriveOJ is transforming auto-écoles
             across Morocco — from Casablanca to Agadir.
           </p>
 

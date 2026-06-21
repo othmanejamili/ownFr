@@ -281,7 +281,7 @@ const Sidebar = () => {
       {/* ── Logo ── */}
       <div className="flex items-center gap-2.5 px-4 py-[18px] border-b border-white/[0.06]">
         <LogoMark />
-        <span className="font-sora text-[14px] font-bold text-white tracking-tight">DriveIQ</span>
+        <span className="font-sora text-[14px] font-bold text-white tracking-tight">DriveOJ</span>
       </div>
 
       {/* ── School context card ── */}

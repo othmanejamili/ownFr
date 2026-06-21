@@ -272,7 +272,7 @@ const Sidebar = () => {
       {/* ── Logo ── */}
       <div className="flex items-center gap-2.5 px-4 py-[18px] border-b border-white/[0.06]">
         <LogoMark />
-        <span className="font-sora text-[14px] font-bold text-white tracking-tight">DriveIQ</span>
+        <span className="font-sora text-[14px] font-bold text-white tracking-tight">DriveOJ</span>
       </div>
 
       {/* ── Student enrollment context card ── */}
@@ -290,7 +290,7 @@ const Sidebar = () => {
               {fullName || '—'}
             </div>
             <div className="text-[10px] text-white/35 font-dm truncate">
-              {student?.email || 'student@driveiq.com'}
+              {student?.email || 'student@driveOJ.com'}
             </div>
           </>
         )}
