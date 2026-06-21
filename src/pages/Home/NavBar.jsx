@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 /*
- * DriveIQ — NavBar.jsx
+ * DriveOJ — NavBar.jsx
  * Stack  : React 18 + Tailwind CSS v3 + React Router v6
  * Fonts  : Sora + DM Sans (same as rest of app)
  *
@@ -107,7 +107,7 @@ const MobileMenu = ({ open, onClose, activeRoute }) => {
           <div className="flex items-center gap-2.5">
             <LogoMark size={30} />
             <span className="font-sora text-[15px] font-bold text-white tracking-tight">
-              DriveIQ
+              DriveOJ
             </span>
           </div>
           <button
@@ -223,11 +223,11 @@ const NavBar = () => {
           <Link
             to="/"
             className="flex items-center gap-2.5 flex-shrink-0"
-            aria-label="DriveIQ home"
+            aria-label="DriveOJ home"
           >
             <LogoMark size={32} />
             <span className="font-sora text-[15px] font-bold text-white tracking-tight">
-              DriveIQ
+              DriveOJ
             </span>
           </Link>
 

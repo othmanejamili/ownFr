@@ -1,4 +1,4 @@
-// Docs.jsx — DriveIQ documentation page
+// Docs.jsx — DriveOJ documentation page
 // Same design system: #060B18 bg · Sora + DM Sans · indigo/violet/emerald accents
 // Stack: React 18 + Tailwind CSS v3
 
@@ -127,8 +127,8 @@ const BADGE_ACCENT = {
 const QUICK_CARDS = [
   { icon: 'Rocket', accent: 'blue',   title: 'Quick start',       desc: 'Get your school set up and running your first lesson in under 5 minutes.',    link: 'Read guide' },
   { icon: 'Users',  accent: 'violet', title: 'Add your team',     desc: 'Invite instructors, set their availability, and assign vehicles to schedules.', link: 'Read guide' },
-  { icon: 'Code',   accent: 'emerald',title: 'API access',        desc: 'Connect DriveIQ to your own systems using our REST API and webhooks.',          link: 'View docs' },
-  { icon: 'Star',   accent: 'cyan',   title: 'AI scheduling',     desc: 'Let DriveIQ fill your calendar automatically based on availability and demand.',  link: 'Learn more' },
+  { icon: 'Code',   accent: 'emerald',title: 'API access',        desc: 'Connect DriveOJ to your own systems using our REST API and webhooks.',          link: 'View docs' },
+  { icon: 'Star',   accent: 'cyan',   title: 'AI scheduling',     desc: 'Let DriveOJ fill your calendar automatically based on availability and demand.',  link: 'Learn more' },
 ];
 
 const QC_ACCENT = {
@@ -183,10 +183,10 @@ const DocsContent = ({ activeSlug }) => (
     <div className="mb-8">
       <Eyebrow text="Getting started" className="mb-4" />
       <h1 className="font-sora text-[32px] font-black text-white tracking-[-1px] mb-3">
-        Welcome to DriveIQ
+        Welcome to DriveOJ
       </h1>
       <p className="text-[15px] text-white/45 leading-relaxed font-dm max-w-xl">
-        DriveIQ is a platform that helps driving schools manage students, instructors, schedules, payments, and communications — all in one place.
+        DriveOJ is a platform that helps driving schools manage students, instructors, schedules, payments, and communications — all in one place.
       </p>
     </div>
 
@@ -215,15 +215,15 @@ const DocsContent = ({ activeSlug }) => (
     {/* Section divider */}
     <div className="h-px bg-white/[0.06] mb-8" />
 
-    {/* What is DriveIQ */}
+    {/* What is DriveOJ */}
     <h2 className="font-sora text-[20px] font-bold text-white tracking-[-0.5px] mb-4">
-      What is DriveIQ?
+      What is DriveOJ?
     </h2>
     <p className="text-[14px] text-white/50 leading-relaxed mb-4 font-dm">
-      DriveIQ is built specifically for driving schools across Morocco and the MENA region. It handles the full student lifecycle — from enrollment and scheduling through to exam prep and invoicing — so school owners and instructors can focus on teaching.
+      DriveOJ is built specifically for driving schools across Morocco and the MENA region. It handles the full student lifecycle — from enrollment and scheduling through to exam prep and invoicing — so school owners and instructors can focus on teaching.
     </p>
     <Alert type="tip">
-      DriveIQ works for both single-location schools and multi-branch networks. Your plan determines how many schools, students, and instructors you can manage.
+      DriveOJ works for both single-location schools and multi-branch networks. Your plan determines how many schools, students, and instructors you can manage.
     </Alert>
 
     {/* Architecture */}
@@ -253,19 +253,19 @@ const DocsContent = ({ activeSlug }) => (
       Installation (API / SDK)
     </h2>
     <p className="text-[14px] text-white/50 leading-relaxed mb-2 font-dm">
-      If you're integrating DriveIQ programmatically, install the client SDK:
+      If you're integrating DriveOJ programmatically, install the client SDK:
     </p>
-    <CodeBlock lang="bash" code={`npm install @driveiq/sdk\n# or\npip install driveiq`} />
+    <CodeBlock lang="bash" code={`npm install @driveOJ/sdk\n# or\npip install driveOJ`} />
 
     <Alert type="info">
-      The DriveIQ REST API uses JWT Bearer tokens. See the <span className="text-blue-400 cursor-pointer">Authentication</span> guide for details.
+      The DriveOJ REST API uses JWT Bearer tokens. See the <span className="text-blue-400 cursor-pointer">Authentication</span> guide for details.
     </Alert>
 
-    <CodeBlock lang="javascript" code={`import DriveIQ from '@driveiq/sdk';
+    <CodeBlock lang="javascript" code={`import DriveOJ from '@driveOJ/sdk';
 
-const client = new DriveIQ({
-  baseURL: 'https://api.driveiq.ma',
-  token: process.env.DRIVEIQ_TOKEN,
+const client = new DriveOJ({
+  baseURL: 'https://api.driveOJ.ma',
+  token: process.env.DRIVEOJ_TOKEN,
 });
 
 // Fetch all students for a school
@@ -380,7 +380,7 @@ const TableOfContents = () => (
       On this page
     </div>
     {[
-      'What is DriveIQ?',
+      'What is DriveOJ?',
       'Key concepts',
       'Installation',
       'Next steps',
@@ -413,7 +413,7 @@ const Docs = () => {
         <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-11 py-10">
           <Eyebrow text="Documentation" className="mb-4" />
           <h1 className="font-sora text-[34px] md:text-[42px] font-black text-white tracking-[-1.5px] mb-3">
-            DriveIQ Docs
+            DriveOJ Docs
           </h1>
           <p className="text-[14px] text-white/40 font-dm max-w-lg">
             Everything you need to set up, manage, and integrate your driving school platform.
