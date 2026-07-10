@@ -11,6 +11,7 @@ import Pricing from '../pages/Home/Pricing';
 import SchoolsPage from '../pages/Home/SchoolsPage';
 import Blog from '../pages/Home/Blogs';
 import Docs from '../pages/Home/Docs';
+import  MembersPage from  '../pages/Dashboard/Owner/Memberspage';
 import  MembersPage from  '../pages/Dashboard/Owner/AddMembres/Memberspage';
 import Studentspage from '../pages/Dashboard/Owner/AddMembres/Studentpage';
 import Instructorpage from '../pages/Dashboard/Owner/AddMembres/Instructorspage';
@@ -60,7 +61,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         
-{/*########################## Protected Routes For Admin ##########################*/}
+
         <Route
           path="/dashboard/admin"
           element={
@@ -78,6 +79,7 @@ function App() {
           </ProtectedRoute>
         }
         />
+
 
         <Route
         path='/dashboard/owner/membres'
@@ -379,6 +381,14 @@ function App() {
         /> 
 
 
+        <Route
+        path='/dashboard/owner/membres'
+        element={
+          <ProtectedRoute requiredRole="A" requireStaff={false}>
+            <MembersPage />
+          </ProtectedRoute>
+        }
+        />
         <Route
           path="/unauthorized"
           element={
