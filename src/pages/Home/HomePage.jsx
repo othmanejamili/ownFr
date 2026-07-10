@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import NavBar from '../Home/NavBar'
 import Footer from './Footer';
 /* ─────────────────────────────────────────────────────────────
-   DriveIQ — Premium Homepage
+   DriveOJ — Premium Homepage
    Stack  : React 18 + Tailwind CSS v3
    Fonts  : Add to index.html <head>:
      <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet">
@@ -230,7 +230,7 @@ const HeroSection = () => (
         </h1>
 
         <p className="text-[16px] text-white/50 leading-relaxed max-w-[440px] mb-9 font-dm animate-[fadeUp_0.8s_ease_forwards]">
-          Stop managing spreadsheets. DriveIQ gives you one command center for every lesson, student, payment, and instructor — so you can focus on the road ahead.
+          Stop managing spreadsheets. DriveOJ gives you one command center for every lesson, student, payment, and instructor — so you can focus on the road ahead.
         </p>
 
         <div className="flex items-center gap-3 mb-7 flex-wrap animate-[fadeUp_0.9s_ease_forwards]">
@@ -601,7 +601,7 @@ const ShowcaseSection = () => {
 // ─────────────────────────────────────────────────────────────
 const MetricsSection = () => {
   const metrics = [
-    { val: '248', sup: '+', label: 'Schools running on DriveIQ', delta: '↑ Growing 12% per month', accent: 'from-blue-500' },
+    { val: '248', sup: '+', label: 'Schools running on DriveOJ', delta: '↑ Growing 12% per month', accent: 'from-blue-500' },
     { val: '91',  sup: '%', label: 'Average student pass rate',  delta: '↑ 18% above national avg', accent: 'from-violet-500' },
     { val: '3',   sup: 'hrs',label: 'Admin time saved weekly',   delta: '↑ Per school on average', accent: 'from-emerald-500' },
     { val: '4.9', sup: '/5', label: 'Average user satisfaction', delta: '↑ Based on 400+ reviews', accent: 'from-amber-500' },
@@ -638,8 +638,8 @@ const MetricsSection = () => {
 // ─────────────────────────────────────────────────────────────
 const TestimonialsSection = () => {
   const testimonials = [
-    { quote: "DriveIQ cut our admin work in half. Scheduling used to take 3 hours a week — now it's 20 minutes.", name: 'Karim Alaoui', role: 'Owner · Auto École Atlas, Casablanca', init: 'KA', color: 'bg-blue-600' },
-    { quote: "Logging into DriveIQ every morning is the first thing I do — everything I need is right there.", name: 'Sara Moussaoui', role: 'Owner · Auto École Lumière, Rabat', init: 'SM', color: 'bg-violet-600' },
+    { quote: "DriveOJ cut our admin work in half. Scheduling used to take 3 hours a week — now it's 20 minutes.", name: 'Karim Alaoui', role: 'Owner · Auto École Atlas, Casablanca', init: 'KA', color: 'bg-blue-600' },
+    { quote: "Logging into DriveOJ every morning is the first thing I do — everything I need is right there.", name: 'Sara Moussaoui', role: 'Owner · Auto École Lumière, Rabat', init: 'SM', color: 'bg-violet-600' },
     { quote: "The student tracking alone is worth it. I can see exactly who's ready for their exam and who needs more sessions.", name: 'Yassir Moktari', role: 'Instructor · Auto École Étoile, Marrakech', init: 'YM', color: 'bg-emerald-600' },
   ];
   return (

@@ -197,12 +197,16 @@ const Login = () => {
         return;
       }
 
-      const { role } = result.userData;
-      const routes = { A: '/dashboard/admin', A: '/dashboard/owner' , I: '/dashboard/instructor', S: '/dashboard/student' };
+      const { role, is_staff } = result.userData;
 
+      let route = '/';
+      if (role === 'A') route = is_staff ? '/dashboard/admin' : '/dashboard/owner';
+      else if (role === 'I') route = '/dashboard/instructor';
+      else if (role === 'S') route = '/dashboard/student';
+      
       setSuccess(true);
       setTimeout(() => {
-        window.location.href = routes[role] || '/';
+        window.location.href = route;
       }, 1200);
 
     } catch (error) {

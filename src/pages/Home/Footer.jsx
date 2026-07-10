@@ -20,6 +20,7 @@ const Footer = () => (
       <div className="flex items-center gap-2">
         <LogoMark size={24} />
         <span className="font-sora text-[13px] font-bold text-white/40">DriveIQ © 2026</span>
+
       </div>
       <div className="flex gap-5">
         {['Privacy','Terms','Contact','Status'].map(l => (

@@ -32,11 +32,12 @@ export const AuthProvider = ({ children }) => {
   // ── Login ───────────────────────────────────────────────────
   const login = async (email, password, rememberMe = false) => {
     setError(null);
+    
     try {
       const { data } = await axios.post(`${API_URL}/auth/login/`, { email, password });
-      const { access, refresh, user_id, username, email: userEmail, role, first_name, last_name } = data;
+      const { access, refresh, user_id, username, email: userEmail, role, first_name, last_name, is_staff } = data;
 
-      const userData = { user_id, username, email: userEmail, role, first_name, last_name };
+      const userData = { user_id, username, email: userEmail, role, first_name, last_name, is_staff: Boolean(is_staff)  };
       const storage  = rememberMe ? localStorage : sessionStorage;
 
       storage.setItem('access',  access);
@@ -53,6 +54,7 @@ export const AuthProvider = ({ children }) => {
       setError(msg);
       return { success: false, message: msg };
     }
+    
   };
 
   // ── Register (school owner — 3 sequential API calls) ────────

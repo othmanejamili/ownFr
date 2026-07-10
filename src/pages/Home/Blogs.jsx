@@ -1,4 +1,4 @@
-// Blog.jsx — DriveIQ blog page
+// Blog.jsx — DriveOJ blog page
 // Same design system: #060B18 bg · Sora + DM Sans · indigo/violet/emerald accents
 // Stack: React 18 + Tailwind CSS v3
 
@@ -55,8 +55,8 @@ const FEATURED = {
   tag: 'Product',
   readTime: '6 min read',
   date: 'May 8, 2026',
-  title: 'How DriveIQ cut admin time by 80% for Auto École Atlas',
-  excerpt: 'We sat down with Karim Alaoui, owner of one of Casablanca\'s top-rated driving schools, to learn how switching to DriveIQ transformed his operations — from scheduling chaos to seamless automation.',
+  title: 'How DriveOJ cut admin time by 80% for Auto École Atlas',
+  excerpt: 'We sat down with Karim Alaoui, owner of one of Casablanca\'s top-rated driving schools, to learn how switching to DriveOJ transformed his operations — from scheduling chaos to seamless automation.',
   author: { initials: 'KA', name: 'Karim Alaoui', role: 'School Owner · Atlas', color: 'bg-blue-600' },
   gradient: 'from-blue-600/20 via-violet-600/10 to-transparent',
   accentColor: 'text-blue-400',
@@ -68,7 +68,7 @@ const POSTS = [
     tag: 'Guide', readTime: '8 min', date: 'May 5, 2026',
     title: 'Setting up your first automated lesson reminder in 5 minutes',
     excerpt: 'No-shows cost schools thousands of MAD a month. Here\'s how to set up SMS reminders that reduce absences by up to 60%.',
-    author: { initials: 'DS', name: 'DriveIQ Team', role: 'Product', color: 'bg-violet-600' },
+    author: { initials: 'DS', name: 'DriveOJ Team', role: 'Product', color: 'bg-violet-600' },
     accent: 'violet',
   },
   {
@@ -80,28 +80,28 @@ const POSTS = [
   },
   {
     tag: 'Feature', readTime: '4 min', date: 'Apr 20, 2026',
-    title: 'Introducing AI scheduling: let DriveIQ fill your calendar automatically',
+    title: 'Introducing AI scheduling: let DriveOJ fill your calendar automatically',
     excerpt: 'Our new AI optimizer analyzes instructor availability, student preferences, and vehicle schedules to suggest the perfect timetable.',
-    author: { initials: 'DS', name: 'DriveIQ Team', role: 'Engineering', color: 'bg-cyan-700' },
+    author: { initials: 'DS', name: 'DriveOJ Team', role: 'Engineering', color: 'bg-cyan-700' },
     accent: 'cyan',
   },
   {
     tag: 'Tips', readTime: '6 min', date: 'Apr 14, 2026',
     title: '7 things top-rated instructors do differently (and how to track them)',
-    excerpt: 'After analyzing 50,000 lessons on DriveIQ, we found clear patterns in what separates 4.9-star instructors from the rest.',
+    excerpt: 'After analyzing 50,000 lessons on DriveOJ, we found clear patterns in what separates 4.9-star instructors from the rest.',
     author: { initials: 'YB', name: 'Youssef Bennis', role: 'Data', color: 'bg-amber-700' },
     accent: 'amber',
   },
   {
     tag: 'Update', readTime: '3 min', date: 'Apr 7, 2026',
-    title: 'DriveIQ v2.4 — faster invoicing, bulk SMS, and a new student portal',
+    title: 'DriveOJ v2.4 — faster invoicing, bulk SMS, and a new student portal',
     excerpt: 'This sprint we focused on the three most-requested features from our school owners. Here\'s everything that shipped.',
-    author: { initials: 'DS', name: 'DriveIQ Team', role: 'Product', color: 'bg-rose-700' },
+    author: { initials: 'DS', name: 'DriveOJ Team', role: 'Product', color: 'bg-rose-700' },
     accent: 'rose',
   },
   {
     tag: 'Guide', readTime: '10 min', date: 'Mar 31, 2026',
-    title: 'The complete guide to student progress tracking in DriveIQ',
+    title: 'The complete guide to student progress tracking in DriveOJ',
     excerpt: 'From theory hours to driving tests — learn how to use progress dashboards to spot at-risk students before they fall behind.',
     author: { initials: 'FO', name: 'Fatima Ouazzani', role: 'Customer Success', color: 'bg-indigo-700' },
     accent: 'blue',
@@ -249,7 +249,7 @@ const Blog = () => {
             style={{ background: 'radial-gradient(circle,rgba(37,99,235,0.12) 0%,transparent 70%)' }} />
         </div>
         <div className="relative z-10">
-          <Eyebrow text="DriveIQ Blog" className="mb-5 justify-center" />
+          <Eyebrow text="DriveOJ Blog" className="mb-5 justify-center" />
           <h1 className="font-sora text-[44px] md:text-[56px] font-black text-white tracking-[-2px]
             leading-[1.05] mb-4">
             Insights for school<br />
@@ -257,7 +257,7 @@ const Blog = () => {
               bg-clip-text text-transparent">owners & instructors</span>
           </h1>
           <p className="text-[15px] text-white/40 max-w-md mx-auto mb-4 leading-relaxed font-dm">
-            Product updates, driving school tips, industry research, and real stories from schools using DriveIQ.
+            Product updates, driving school tips, industry research, and real stories from schools using DriveOJ.
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap mt-2">
             <TrustItem text="Published weekly" />

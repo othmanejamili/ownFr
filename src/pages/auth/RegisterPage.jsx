@@ -507,9 +507,7 @@ const RegisterPage = () => {
             </Field>
 
             <div className="flex gap-3 mt-1">
-              <Btn variant="ghost" onClick={() => setStep(1)} className="flex-none w-[80px]">
-                ← Back
-              </Btn>
+
               <Btn onClick={goNext} className="flex-1">
                 Continue
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -563,9 +561,7 @@ const RegisterPage = () => {
             </div>
 
             <div className="flex gap-3">
-              <Btn variant="ghost" onClick={() => setStep(2)} className="flex-none w-[80px]">
-                ← Back
-              </Btn>
+
               <Btn
                 onClick={handleSubmit}
                 disabled={!selectedPlan || isLoading}

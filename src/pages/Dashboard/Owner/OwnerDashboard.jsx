@@ -1,7 +1,7 @@
 // src/pages/OwnerDashboard/OwnerDashboard.jsx
 import { useState } from 'react';
 import Sidebar from './Sidebar';
-import { useDashboard } from './useDashboard';
+import { useDashboard } from './UsedashboardO';
 import {
   KpiStrip,
   LessonChart,
@@ -17,7 +17,7 @@ import {
   DashboardError,
 } from './Dashboardcomponents';
 
-// ── Topbar ────────────────────────────────────────────────────
+
 const Topbar = ({ range, onRangeChange, ownerName, totalSchools, liveCount }) => {
   const now  = new Date();
   const hour = now.getHours();
