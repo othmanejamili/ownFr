@@ -11,7 +11,6 @@ import Pricing from '../pages/Home/Pricing';
 import SchoolsPage from '../pages/Home/SchoolsPage';
 import Blog from '../pages/Home/Blogs';
 import Docs from '../pages/Home/Docs';
-import  MembersPage from  '../pages/Dashboard/Owner/Memberspage';
 import  MembersPage from  '../pages/Dashboard/Owner/AddMembres/Memberspage';
 import Studentspage from '../pages/Dashboard/Owner/AddMembres/Studentpage';
 import Instructorpage from '../pages/Dashboard/Owner/AddMembres/Instructorspage';
