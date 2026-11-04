@@ -251,7 +251,8 @@ const Instructorpage = () => {
       } else {
         setProfiles(all.filter(p => p.user_role === 'I'));
       }
-    } catch {
+    }  catch (err) {
+      console.error('profiles error:', err?.response?.status, err?.response?.data || err);
       setError('Failed to load members.');
     } finally {
       setLoading(false);
