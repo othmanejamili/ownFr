@@ -1054,7 +1054,7 @@ const VehicleRow = ({ vehicle, onEdit, onDelete, onDetails, onMaintenance, onPic
     <td className="px-4 py-3.5">
       <div className="flex items-center gap-2.5">
         {vehicle.primary_thumbnail ? (
-          <img src={vehicle.primary_thumbnail} alt={vehicle.plate_number}
+          <img src={mediaUrl(vehicle.primary_thumbnail)} alt={vehicle.plate_number}
             className="w-9 h-9 rounded-[9px] object-cover flex-shrink-0"
             onClick={() => onDetails(vehicle)} />
         ) : (
