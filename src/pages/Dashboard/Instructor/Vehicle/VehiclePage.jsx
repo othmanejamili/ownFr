@@ -18,12 +18,14 @@
 //   POST   /api/vehicle/:id/complete_maintenance/ → complete maint.
 //   GET    /api/vehicle/:id/history/              → usage history
 //   GET    /api/drivingschool/                    → schools (for select)
-
+//<img
 import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import Sidebar from '../Dashboard/Sidebar';
 
 const API = import.meta.env.VITE_API_URL;
+const API_ORIGIN = new URL(API, window.location.origin).origin;
+const mediaUrl = u => !u ? null : /^https?:\/\//.test(u) ? u : `${API_ORIGIN}${u}`;
 
 /* ─── API layer ──────────────────────────────────────────────── */
 const vehicleApi = {
@@ -522,7 +524,7 @@ const VehicleDrawer = ({ vehicle, onClose, onEdit, onMaintenance, onPictures, on
           {/* Hero card */}
           <div className="bg-blue-600/08 border border-blue-500/15 rounded-2xl p-5">
             {vehicle.primary_thumbnail ? (
-              <img src={vehicle.primary_thumbnail} alt={vehicle.plate_number}
+              <img src={mediaUrl(vehicle.primary_thumbnail)} alt={vehicle.plate_number}
                 className="w-full h-36 object-cover rounded-xl mb-3" />
             ) : (
               <div className="w-full h-28 rounded-xl bg-white/[0.04] border border-white/[0.07]
@@ -837,7 +839,7 @@ const PicturesModal = ({ open, vehicle, onClose, showToast }) => {
 
                   {/* Image */}
                   <img
-                    src={pic.thumbnail_url || pic.image_url || pic.image}
+                    src={mediaUrl(pic.thumbnail_url || pic.image_url || pic.image)}
                     alt={pic.caption || 'Vehicle photo'}
                     className="w-full h-36 object-cover"
                   />
@@ -1052,7 +1054,7 @@ const VehicleRow = ({ vehicle, onEdit, onDelete, onDetails, onMaintenance, onPic
     <td className="px-4 py-3.5">
       <div className="flex items-center gap-2.5">
         {vehicle.primary_thumbnail ? (
-          <img src={vehicle.primary_thumbnail} alt={vehicle.plate_number}
+          <img src={mediaUrl(vehicle.primary_thumbnail)} alt={vehicle.plate_number}
             className="w-9 h-9 rounded-[9px] object-cover flex-shrink-0"
             onClick={() => onDetails(vehicle)} />
         ) : (
