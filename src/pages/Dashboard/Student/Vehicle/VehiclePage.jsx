@@ -8,12 +8,14 @@
 //   GET  /api/vehicle/statistics/        → fleet stats
 //   GET  /api/vehicle/:id/pictures/      → pictures for a vehicle
 //   GET  /api/vehicle/available/         → available vehicles
-
+//<img
 import { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import Sidebar from '../Dashboard/Sidebar';
 
 const API = import.meta.env.VITE_API_URL;
+const API_ORIGIN = new URL(API, window.location.origin).origin;
+const mediaUrl = u => !u ? null : /^https?:\/\//.test(u) ? u : `${API_ORIGIN}${u}`;
 
 /* ─── API layer (read-only) ──────────────────────────────────── */
 const vehicleApi = {
@@ -164,7 +166,7 @@ const Lightbox = ({ open, pictures, startIndex, onClose }) => {
       {/* Image */}
       <div className="relative max-w-[80vw] max-h-[80vh]" onClick={e => e.stopPropagation()}>
         <img
-          src={pic.image_url || pic.image}
+          src={mediaUrl(pic.image_url || pic.image)}
           alt={pic.caption || 'Vehicle'}
           className="max-w-full max-h-[80vh] rounded-2xl object-contain"
           style={{ boxShadow: '0 24px 80px rgba(0,0,0,0.6)' }}
@@ -201,7 +203,7 @@ const Lightbox = ({ open, pictures, startIndex, onClose }) => {
                 'w-10 h-10 rounded-lg overflow-hidden border-2 transition-all',
                 i === idx ? 'border-blue-500 scale-110' : 'border-transparent opacity-50 hover:opacity-80',
               )}>
-              <img src={p.thumbnail_url || p.image_url || p.image} alt=""
+              <img src={mediaUrl(p.thumbnail_url || p.image_url || p.image)} alt=""
                 className="w-full h-full object-cover" />
             </button>
           ))}
@@ -249,7 +251,7 @@ const VehiclePanel = ({ vehicle, onClose, showToast }) => {
         {/* Hero image */}
         <div className="relative w-full h-52 flex-shrink-0 overflow-hidden">
           {primary ? (
-            <img src={primary.image_url || primary.image} alt={vehicle.plate_number}
+            <img src={mediaUrl(primary.image_url || primary.image)} alt={vehicle.plate_number}
               className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-blue-900/40 to-[#090F1E]
@@ -369,7 +371,7 @@ const VehiclePanel = ({ vehicle, onClose, showToast }) => {
                   <button key={pic.id} onClick={() => openLightbox(i)}
                     className="relative group h-20 rounded-xl overflow-hidden border border-white/[0.06]
                       hover:border-blue-500/40 transition-all">
-                    <img src={pic.thumbnail_url || pic.image_url || pic.image}
+                    <img src={mediaUrl(pic.thumbnail_url || pic.image_url || pic.image)}
                       alt={pic.caption || ''}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     {pic.is_primary && (
@@ -420,7 +422,7 @@ const VehicleCard = ({ vehicle, onClick }) => {
       {/* Photo */}
       <div className="relative w-full h-44 overflow-hidden bg-gradient-to-br from-blue-900/30 to-[#0C1728]">
         {thumb ? (
-          <img src={thumb} alt={vehicle.plate_number}
+          <img src={mediaUrl(thumb)} alt={vehicle.plate_number}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-4xl opacity-30">🚗</div>
@@ -482,7 +484,7 @@ const VehicleListRow = ({ vehicle, onClick }) => (
     <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0
       bg-gradient-to-br from-blue-900/30 to-[#0C1728]">
       {vehicle.primary_thumbnail ? (
-        <img src={vehicle.primary_thumbnail} alt="" className="w-full h-full object-cover" />
+        <img src={mediaUrl(vehicle.primary_thumbnail)} alt="" className="w-full h-full object-cover" />
       ) : (
         <div className="w-full h-full flex items-center justify-center text-xl opacity-30">🚗</div>
       )}
